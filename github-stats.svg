@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="620" height="404" viewBox="0 0 620 404">
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="560" viewBox="0 0 620 560">
   <defs>
-    <clipPath id="card"><rect width="620" height="404" rx="14" ry="14"/></clipPath>
+    <clipPath id="card"><rect width="620" height="560" rx="14" ry="14"/></clipPath>
     <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8fbcbb"/><stop offset="50%" stop-color="#81a1c1"/><stop offset="100%" stop-color="#5e81ac"/></linearGradient>
     <linearGradient id="bdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#88c0d0" stop-opacity="0.7"/><stop offset="50%" stop-color="#5e81ac" stop-opacity="0.25"/><stop offset="100%" stop-color="#81a1c1" stop-opacity="0.7"/></linearGradient>
     <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -12,13 +12,13 @@
   </defs>
 
   <!-- Card base + subtle dot texture -->
-  <rect width="620" height="404" rx="14" ry="14" fill="#2e3440"/>
-  <rect width="620" height="404" rx="14" ry="14" fill="url(#dots)" clip-path="url(#card)"/>
+  <rect width="620" height="560" rx="14" ry="14" fill="#2e3440"/>
+  <rect width="620" height="560" rx="14" ry="14" fill="url(#dots)" clip-path="url(#card)"/>
 
   <!-- Top accent strip (replaces header) -->
   <rect y="0" width="620" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
-  <g clip-path="url(#card)" font-family="'Segoe UI',system-ui,sans-serif">
+  <g clip-path="url(#card)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
 
     <!-- ── Stat chips ────────────────────────────────────────────────────── -->
     
@@ -39,7 +39,7 @@
   <text x="237" y="62" text-anchor="middle"
         font-size="9.5" letter-spacing="0.6" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="237" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#a3be8c">377</text>
+        font-size="20" font-weight="700" fill="#a3be8c">379</text>
   <rect x="316" y="16" width="134" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="316" y="34" width="3" height="44" rx="1.5"
@@ -48,7 +48,7 @@
   <text x="383" y="62" text-anchor="middle"
         font-size="9.5" letter-spacing="0.6" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="383" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#88c0d0">46</text>
+        font-size="20" font-weight="700" fill="#88c0d0">48</text>
   <rect x="462" y="16" width="134" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="462" y="34" width="3" height="44" rx="1.5"
@@ -57,7 +57,7 @@
   <text x="529" y="62" text-anchor="middle"
         font-size="9.5" letter-spacing="0.6" fill="#d8dee9">LINES OF CODE</text>
   <text x="529" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#b48ead">37.7k</text>
+        font-size="20" font-weight="700" fill="#b48ead">25.6k</text>
 
     <!-- ── Language section ──────────────────────────────────────────────── -->
     <text x="24" y="116"
@@ -95,25 +95,38 @@
   <text x="48" y="264" font-size="10" font-weight="700"
         letter-spacing="0.8" fill="#81a1c1">IDE</text>
   <text x="48" y="281"
-           font-size="12.5" fill="#eceff4">Neovim</text>
+             font-size="12.5" fill="#eceff4">Neovim</text>
   <g transform="translate(24,296)" fill="#a3be8c" color="#a3be8c"><rect x="1.5" y="1.5"  width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.4"/><rect x="1.5" y="6.25" width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.7"/><rect x="1.5" y="11"   width="13" height="3.5" rx="1.75" fill="currentColor"/></g>
   <text x="48" y="312" font-size="10" font-weight="700"
         letter-spacing="0.8" fill="#a3be8c">STACK</text>
   <text x="48" y="329"
-           font-size="12.5" fill="#eceff4">Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js</text>
+             font-size="12.5" fill="#eceff4">Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js</text>
   <g transform="translate(24,344)" fill="#d08770" color="#d08770"><path d="M1 2.5A2.5 2.5 0 013.5 0h9.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 000 2h.75a.75.75 0 010 1.5H3.5A2.5 2.5 0 011 11.5zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1z"/></g>
   <text x="48" y="360" font-size="10" font-weight="700"
         letter-spacing="0.8" fill="#d08770">LEARNING</text>
   <text x="48" y="377"
-           font-size="12.5" fill="#eceff4">WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)</text>
+             font-size="12.5" fill="#eceff4">WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)</text>
+  <line x1="24" y1="396" x2="596" y2="396" stroke="#434c5e" stroke-width="1"/>
+  <g transform="translate(24,416)" fill="#ebcb8b" color="#ebcb8b"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/></g>
+  <text x="48" y="432" font-size="10" font-weight="700"
+        letter-spacing="0.8" fill="#ebcb8b">CONTACT</text>
+  <text x="48" y="449"
+             font-size="12.5" fill="#eceff4">Email: zsombor@remgr.dev \ zsombor@mailbox.org</text><text x="48" y="467"
+             font-size="12.5" fill="#eceff4">Discord: Remgr</text><text x="48" y="485"
+             font-size="12.5" fill="#eceff4">Telegram: @Remgr12</text>
+  <g transform="translate(24,500)" fill="#b48ead" color="#b48ead"><path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></g>
+  <text x="48" y="516" font-size="10" font-weight="700"
+        letter-spacing="0.8" fill="#b48ead">LOCATION</text>
+  <a href="https://www.openstreetmap.org/search?query=Salzburg%20State" target="_blank"><text x="48" y="533"
+             font-size="12.5" fill="#eceff4">Salzburg State</text></a>
 
     <!-- Timestamp -->
-    <text x="596" y="398" font-size="9" fill="#81a1c1"
+    <text x="596" y="554" font-size="9" fill="#81a1c1"
           text-anchor="end">updated 2026-04-24</text>
 
   </g>
 
   <!-- Card border drawn on top of content -->
-  <rect width="620" height="404" rx="14" ry="14"
+  <rect width="620" height="560" rx="14" ry="14"
         fill="none" stroke="url(#bdr)" stroke-width="1.5"/>
 </svg>
