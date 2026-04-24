@@ -1,0 +1,51 @@
+name: Update GitHub Stats Widget
+
+on:
+  schedule:
+    - cron: '0 6 * * *'         # daily at 06:00 UTC
+  push:
+    branches: [main]
+    paths:
+      - '.github/scripts/generate-widget.js'
+      - '.github/workflows/update-widget.yml'
+  workflow_dispatch:             # allow manual trigger from the Actions tab
+
+concurrency:
+  group: update-widget
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate SVG widget
+        env:
+          GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+          # ── Customise your details here ───────────────────────────────────
+          WIDGET_IDE:      'Neovim'
+          WIDGET_STACK:    'Rust · TypeScript · React'
+          WIDGET_LEARNING: 'WebAssembly · Distributed Systems'
+          # ─────────────────────────────────────────────────────────────────
+          OUTPUT_FILE: github-stats.svg
+        run: node .github/scripts/generate-widget.js
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add github-stats.svg
+          git diff --staged --quiet && echo "No changes" || \
+            (git commit -m "chore: update github stats widget [skip ci]" && git push)
