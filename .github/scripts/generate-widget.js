@@ -10,9 +10,11 @@ if (!TOKEN)    { console.error('GITHUB_TOKEN is required');    process.exit(1); 
 if (!USERNAME) { console.error('GITHUB_USERNAME is required'); process.exit(1); }
 
 const CUSTOM = {
-  ide:      process.env.WIDGET_IDE      ?? 'VS Code',
-  stack:    process.env.WIDGET_STACK    ?? 'JavaScript · Node.js · React',
-  learning: process.env.WIDGET_LEARNING ?? 'Rust · Systems Programming',
+  ide:      process.env.WIDGET_IDE      || '',
+  stack:    process.env.WIDGET_STACK    || '',
+  learning: process.env.WIDGET_LEARNING || '',
+  contact:  process.env.WIDGET_CONTACT  || '',
+  location: process.env.WIDGET_LOCATION || '',
 };
 
 const MAX_LANGS     = 5;
@@ -42,7 +44,7 @@ const THEMES = {
       { color: '#0ea5e9', opacity: 0.70 },
     ],
     statColors:  ['#fbbf24', '#34d399', '#60a5fa', '#c084fc'],
-    aboutColors: ['#818cf8', '#34d399', '#f472b6'],
+    aboutColors: ['#818cf8', '#34d399', '#f472b6', '#fbbf24', '#60a5fa'],
   },
 
   nord: {
@@ -66,7 +68,7 @@ const THEMES = {
       { color: '#81a1c1', opacity: 0.70 },
     ],
     statColors:  ['#ebcb8b', '#a3be8c', '#88c0d0', '#b48ead'],
-    aboutColors: ['#81a1c1', '#a3be8c', '#d08770'],
+    aboutColors: ['#81a1c1', '#a3be8c', '#d08770', '#ebcb8b', '#b48ead'],
   },
 
   catppuccin: {
@@ -90,7 +92,7 @@ const THEMES = {
       { color: '#89dceb', opacity: 0.70 },
     ],
     statColors:  ['#f9e2af', '#a6e3a1', '#89b4fa', '#cba6f7'],
-    aboutColors: ['#cba6f7', '#a6e3a1', '#f38ba8'],
+    aboutColors: ['#cba6f7', '#a6e3a1', '#f38ba8', '#f9e2af', '#89dceb'],
   },
 };
 
@@ -269,6 +271,8 @@ const esc = (s) =>
 // ── About text wrapping ────────────────────────────────────────────────────────
 // Splits at ' · ' first, then spaces, to fit within availWidth px (12px font).
 function wrapAbout(text, availWidth) {
+  if (text.includes('\n')) return text.split('\n');
+
   const MAX_CHARS = Math.floor(availWidth / 6.6); // approx width per char at 12px
   if (text.length <= MAX_CHARS) return [text];
 
@@ -298,6 +302,8 @@ const ICON = {
   terminal: `<rect x="1" y="1" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 5.5l3.5 3-3.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.5" y1="11.5" x2="13" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>`,
   layers:   `<rect x="1.5" y="1.5"  width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.4"/><rect x="1.5" y="6.25" width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.7"/><rect x="1.5" y="11"   width="13" height="3.5" rx="1.75" fill="currentColor"/>`,
   book:     `<path d="M1 2.5A2.5 2.5 0 013.5 0h9.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 000 2h.75a.75.75 0 010 1.5H3.5A2.5 2.5 0 011 11.5zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1z"/>`,
+  mail:     `<path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/>`,
+  location: `<path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/>`,
 };
 
 // ── SVG builder ────────────────────────────────────────────────────────────────
@@ -337,16 +343,27 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     { icon: ICON.terminal, color: T.aboutColors[0], label: 'IDE',      value: CUSTOM.ide      },
     { icon: ICON.layers,   color: T.aboutColors[1], label: 'Stack',    value: CUSTOM.stack    },
     { icon: ICON.book,     color: T.aboutColors[2], label: 'Learning', value: CUSTOM.learning },
-  ];
+    { separator: true },
+    { icon: ICON.mail,     color: T.aboutColors[3], label: 'Contact',  value: CUSTOM.contact  },
+    { icon: ICON.location, color: T.aboutColors[4], label: 'Location', value: CUSTOM.location, link: CUSTOM.location ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(CUSTOM.location)}` : '' },
+  ].filter(item => item.separator || item.value);
 
-  const aboutData = aboutItems.map((item) => ({
-    ...item,
-    lines: wrapAbout(item.value, ABOUT_VALUE_W),
-  }));
+  // Clean up leading/trailing separators and duplicates
+  while (aboutItems.length && aboutItems[0].separator) aboutItems.shift();
+  while (aboutItems.length && aboutItems[aboutItems.length - 1].separator) aboutItems.pop();
 
-  const totalAboutH = aboutData.reduce(
-    (sum, item) => sum + ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP, 0,
-  );
+  const aboutData = aboutItems.map((item) => {
+    if (item.separator) return item;
+    return {
+      ...item,
+      lines: wrapAbout(item.value, ABOUT_VALUE_W),
+    };
+  });
+
+  const totalAboutH = aboutData.reduce((sum, item) => {
+    if (item.separator) return sum + 24;
+    return sum + ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
+  }, 0);
 
   // ── Divider / About Y positions ───────────────────────────────────────────────
   const DIV_Y   = LEGEND_Y + LEGEND_ROWS * LEGEND_ROW + 12;
@@ -411,15 +428,27 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
   // ── About rows (label on one line, wrapped value below) ──────────────────────
   let curY = ABOUT_Y;
   const aboutHtml = aboutData.map((item) => {
+    if (item.separator) {
+      const sepY = curY;
+      curY += 24;
+      return `\n  <line x1="${PAD}" y1="${sepY + 4}" x2="${W - PAD}" y2="${sepY + 4}" stroke="${T.divider}" stroke-width="1"/>`;
+    }
+
     const labelY      = curY + ABOUT_LABEL_H;
     const firstValueY = labelY + ABOUT_VALUE_H - 1;
+    let linesHtml = item.lines.map((line, li) =>
+      `<text x="${ABOUT_INDENT}" y="${firstValueY + li * ABOUT_VALUE_H}"
+             font-size="12.5" fill="${T.valueText}">${esc(line)}</text>`).join('');
+
+    if (item.link) {
+      linesHtml = `<a href="${item.link}" target="_blank">${linesHtml}</a>`;
+    }
+
     const chunk = `
   <g transform="translate(${PAD},${curY})" fill="${item.color}" color="${item.color}">${item.icon}</g>
   <text x="${ABOUT_INDENT}" y="${labelY}" font-size="10" font-weight="700"
         letter-spacing="0.8" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
-  ${item.lines.map((line, li) =>
-    `<text x="${ABOUT_INDENT}" y="${firstValueY + li * ABOUT_VALUE_H}"
-           font-size="12.5" fill="${T.valueText}">${esc(line)}</text>`).join('')}`;
+  ${linesHtml}`;
     curY += ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
     return chunk;
   }).join('');
@@ -454,7 +483,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
   <!-- Top accent strip (replaces header) -->
   <rect y="0" width="${W}" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
-  <g clip-path="url(#card)" font-family="'Segoe UI',system-ui,sans-serif">
+  <g clip-path="url(#card)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
 
     <!-- ── Stat chips ────────────────────────────────────────────────────── -->
     ${chipsHtml}

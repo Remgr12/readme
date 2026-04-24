@@ -1,3 +1,0 @@
-<div align="center">
-  <img src="github-stats.svg" alt="GitHub Stats" />
-</div>
