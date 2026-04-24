@@ -39,6 +39,11 @@ jobs:
           WIDGET_IDE:      'Neovim'
           WIDGET_STACK:    'Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js'
           WIDGET_LEARNING: 'WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)'
+          WIDGET_CONTACT:  |-
+            Email: zsombor@remgr.dev \ zsombor@mailbox.org
+            Discord: Remgr
+            Telegram: @Remgr12
+          WIDGET_LOCATION: 'Salzburg State'
           # ─────────────────────────────────────────────────────────────────
           OUTPUT_FILE: github-stats.svg
         run: node .github/scripts/generate-widget.js
