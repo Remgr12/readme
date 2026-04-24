@@ -18,7 +18,7 @@
   <!-- Top accent strip (replaces header) -->
   <rect y="0" width="620" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
-  <g clip-path="url(#card)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <g clip-path="url(#card)" font-family="Inter, Roboto, 'Helvetica Neue', Arial, sans-serif">
 
     <!-- ── Stat chips ────────────────────────────────────────────────────── -->
     
@@ -39,7 +39,7 @@
   <text x="237" y="62" text-anchor="middle"
         font-size="9.5" letter-spacing="0.6" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="237" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#a3be8c">379</text>
+        font-size="20" font-weight="700" fill="#a3be8c">380</text>
   <rect x="316" y="16" width="134" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="316" y="34" width="3" height="44" rx="1.5"
@@ -48,7 +48,7 @@
   <text x="383" y="62" text-anchor="middle"
         font-size="9.5" letter-spacing="0.6" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="383" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#88c0d0">48</text>
+        font-size="20" font-weight="700" fill="#88c0d0">49</text>
   <rect x="462" y="16" width="134" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="462" y="34" width="3" height="44" rx="1.5"
@@ -57,7 +57,7 @@
   <text x="529" y="62" text-anchor="middle"
         font-size="9.5" letter-spacing="0.6" fill="#d8dee9">LINES OF CODE</text>
   <text x="529" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#b48ead">25.6k</text>
+        font-size="20" font-weight="700" fill="#b48ead">37.8k</text>
 
     <!-- ── Language section ──────────────────────────────────────────────── -->
     <text x="24" y="116"
