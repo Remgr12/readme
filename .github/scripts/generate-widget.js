@@ -392,7 +392,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
         fill="${s.color}" opacity="0.85"/>
   <g transform="translate(${cx - 8},${CHIPS_Y + 10})" fill="${s.color}">${s.icon}</g>
   <text x="${cx}" y="${CHIPS_Y + 46}" text-anchor="middle"
-        font-size="9.5" letter-spacing="0.6" fill="${T.chipLabel}">${esc(s.label)}</text>
+        font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="0.8" fill="${T.chipLabel}">${esc(s.label)}</text>
   <text x="${cx}" y="${CHIPS_Y + 68}" text-anchor="middle"
         font-size="20" font-weight="700" fill="${s.color}">${esc(s.value)}</text>`;
   }).join('');
@@ -446,8 +446,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
     const chunk = `
   <g transform="translate(${PAD},${curY})" fill="${item.color}" color="${item.color}">${item.icon}</g>
-  <text x="${ABOUT_INDENT}" y="${labelY}" font-size="10" font-weight="700"
-        letter-spacing="0.8" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
+  <text x="${ABOUT_INDENT}" y="${labelY}" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
   ${linesHtml}`;
     curY += ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
     return chunk;
@@ -476,38 +475,30 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     </clipPath>
   </defs>
 
-  <!-- Card base + subtle dot texture -->
   <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}" fill="${T.card}"/>
   <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}" fill="url(#dots)" clip-path="url(#card)"/>
 
-  <!-- Top accent strip (replaces header) -->
   <rect y="0" width="${W}" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
   <g clip-path="url(#card)" font-family="Inter, Roboto, 'Helvetica Neue', Arial, sans-serif">
 
-    <!-- ── Stat chips ────────────────────────────────────────────────────── -->
     ${chipsHtml}
 
-    <!-- ── Language section ──────────────────────────────────────────────── -->
     <text x="${PAD}" y="${LANG_TOP}"
-          font-size="9.5" letter-spacing="1.5" fill="${T.langLabel}">LANGUAGES</text>
+          font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1.5" fill="${T.langLabel}">LANGUAGES</text>
     <g clip-path="url(#bar)">${segments}</g>
     ${legend}
 
-    <!-- ── Divider ───────────────────────────────────────────────────────── -->
     <line x1="${PAD}" y1="${DIV_Y}" x2="${W - PAD}" y2="${DIV_Y}"
           stroke="${T.divider}" stroke-width="1"/>
 
-    <!-- ── About ─────────────────────────────────────────────────────────── -->
     ${aboutHtml}
 
-    <!-- Timestamp -->
     <text x="${W - PAD}" y="${H - 6}" font-size="9" fill="${T.timestamp}"
           text-anchor="end">updated ${updatedAt}</text>
 
   </g>
 
-  <!-- Card border drawn on top of content -->
   <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}"
         fill="none" stroke="url(#bdr)" stroke-width="1.5"/>
 </svg>`;
