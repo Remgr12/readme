@@ -37,8 +37,8 @@ jobs:
           # ── Customise your details here ───────────────────────────────────
           WIDGET_THEME:    'nord'   # 'default' | 'nord' | 'catppuccin'
           WIDGET_IDE:      'Neovim'
-          WIDGET_STACK:    'Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js · Odin · Kotlin'
-          WIDGET_LEARNING: 'WebAssembly · Distributed Systems'
+          WIDGET_STACK:    'Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js'
+          WIDGET_LEARNING: 'WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)'
           # ─────────────────────────────────────────────────────────────────
           OUTPUT_FILE: github-stats.svg
         run: node .github/scripts/generate-widget.js
