@@ -483,7 +483,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
   <!-- Top accent strip (replaces header) -->
   <rect y="0" width="${W}" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
-  <g clip-path="url(#card)" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <g clip-path="url(#card)" font-family="Inter, Roboto, 'Helvetica Neue', Arial, sans-serif">
 
     <!-- ── Stat chips ────────────────────────────────────────────────────── -->
     ${chipsHtml}
