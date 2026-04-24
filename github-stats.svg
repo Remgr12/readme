@@ -25,39 +25,39 @@
         fill="#ebcb8b" opacity="0.85"/>
   <g transform="translate(113,26)" fill="#ebcb8b"><path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/></g>
   <text x="121" y="62" text-anchor="middle"
-        font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="0.8" fill="#d8dee9">TOTAL STARS</text>
+        font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">TOTAL STARS</text>
   <text x="121" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#ebcb8b">5</text>
+        font-size="20" font-weight="bold" fill="#ebcb8b">5</text>
   <rect x="229" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="229" y="34" width="3" height="44" rx="1.5"
         fill="#a3be8c" opacity="0.85"/>
   <g transform="translate(318,26)" fill="#a3be8c"><path d="M11.93 8.5a4.002 4.002 0 01-7.86 0H.75a.75.75 0 010-1.5H4.07a4.002 4.002 0 017.86 0h3.32a.75.75 0 010 1.5zm-1.43-.75a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/></g>
   <text x="326" y="62" text-anchor="middle"
-        font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="0.8" fill="#d8dee9">LIFETIME COMMITS</text>
+        font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="326" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#a3be8c">383</text>
+        font-size="20" font-weight="bold" fill="#a3be8c">384</text>
   <rect x="434" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="434" y="34" width="3" height="44" rx="1.5"
         fill="#88c0d0" opacity="0.85"/>
   <g transform="translate(523,26)" fill="#88c0d0"><path d="M8 0a8 8 0 110 16A8 8 0 018 0zm0 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zm.75 3.25a.75.75 0 00-1.5 0v3.63L5.22 10.4a.75.75 0 001.06 1.06l2.22-2.22a.75.75 0 00.22-.53V4.75z"/></g>
   <text x="531" y="62" text-anchor="middle"
-        font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="0.8" fill="#d8dee9">14-DAY COMMITS</text>
+        font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="531" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#88c0d0">52</text>
+        font-size="20" font-weight="bold" fill="#88c0d0">53</text>
   <rect x="639" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="639" y="34" width="3" height="44" rx="1.5"
         fill="#b48ead" opacity="0.85"/>
   <g transform="translate(728,26)" fill="#b48ead"><path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"/></g>
   <text x="736" y="62" text-anchor="middle"
-        font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="0.8" fill="#d8dee9">LINES OF CODE</text>
+        font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-size="20" font-weight="700" fill="#b48ead">26.2k</text>
+        font-size="20" font-weight="bold" fill="#b48ead">37.8k</text>
 
     <text x="24" y="116"
-          font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1.5" fill="#d8dee9">LANGUAGES</text>
+          font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1.5" fill="#d8dee9">LANGUAGES</text>
     <g clip-path="url(#bar)"><rect x="24" y="126" width="456" height="12" fill="#b07219"/><rect x="480" y="126" width="275" height="12" fill="#dea584"/><rect x="755" y="126" width="41" height="12" fill="#89e051"/><rect x="796" y="126" width="32" height="12" fill="#3572A5"/><rect x="828" y="126" width="4" height="12" fill="#e34c26"/></g>
     
   <circle cx="29" cy="157" r="4.5" fill="#b07219"/>
@@ -86,26 +86,26 @@
 
     
   <g transform="translate(24,248)" fill="#81a1c1" color="#81a1c1"><rect x="1" y="1" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 5.5l3.5 3-3.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.5" y1="11.5" x2="13" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></g>
-  <text x="48" y="264" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1" fill="#81a1c1">IDE</text>
+  <text x="48" y="264" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#81a1c1">IDE</text>
   <text x="48" y="281"
              font-size="12.5" fill="#eceff4">Neovim</text>
   <g transform="translate(24,296)" fill="#a3be8c" color="#a3be8c"><rect x="1.5" y="1.5"  width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.4"/><rect x="1.5" y="6.25" width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.7"/><rect x="1.5" y="11"   width="13" height="3.5" rx="1.75" fill="currentColor"/></g>
-  <text x="48" y="312" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1" fill="#a3be8c">STACK</text>
+  <text x="48" y="312" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#a3be8c">STACK</text>
   <text x="48" y="329"
              font-size="12.5" fill="#eceff4">Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js</text>
   <g transform="translate(24,344)" fill="#d08770" color="#d08770"><path d="M1 2.5A2.5 2.5 0 013.5 0h9.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 000 2h.75a.75.75 0 010 1.5H3.5A2.5 2.5 0 011 11.5zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1z"/></g>
-  <text x="48" y="360" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1" fill="#d08770">LEARNING</text>
+  <text x="48" y="360" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#d08770">LEARNING</text>
   <text x="48" y="377"
              font-size="12.5" fill="#eceff4">WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)</text>
   <line x1="24" y1="396" x2="832" y2="396" stroke="#434c5e" stroke-width="1"/>
   <g transform="translate(24,416)" fill="#ebcb8b" color="#ebcb8b"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/></g>
-  <text x="48" y="432" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1" fill="#ebcb8b">CONTACT</text>
+  <text x="48" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#ebcb8b">CONTACT</text>
   <text x="48" y="449"
              font-size="12.5" fill="#eceff4">Email: zsombor@remgr.dev \ zsombor@mailbox.org</text><text x="48" y="467"
              font-size="12.5" fill="#eceff4">Discord: Remgr</text><text x="48" y="485"
              font-size="12.5" fill="#eceff4">Telegram: @Remgr12</text>
   <g transform="translate(24,500)" fill="#b48ead" color="#b48ead"><path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></g>
-  <text x="48" y="516" font-family="Arial, sans-serif" font-weight="800" font-size="10" letter-spacing="1" fill="#b48ead">LOCATION</text>
+  <text x="48" y="516" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#b48ead">LOCATION</text>
   <a href="https://www.openstreetmap.org/search?query=Salzburg%20State" target="_blank"><text x="48" y="533"
              font-size="12.5" fill="#eceff4">Salzburg State</text></a>
 
