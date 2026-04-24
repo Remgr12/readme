@@ -309,7 +309,7 @@ const ICON = {
 // ── SVG builder ────────────────────────────────────────────────────────────────
 function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, languages }) {
   const T      = activeTheme;
-  const W      = 620;
+  const W      = 856;
   const PAD    = 24;
   const RADIUS = 14;
 
