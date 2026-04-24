@@ -19,6 +19,84 @@ const MAX_LANGS     = 5;
 const MAX_LOC_REPOS = 25;
 const OUTPUT_FILE   = process.env.OUTPUT_FILE ?? 'github-stats.svg';
 
+// ── Themes ─────────────────────────────────────────────────────────────────────
+// Select via WIDGET_THEME env var: 'default' | 'nord' | 'catppuccin'
+const THEMES = {
+  default: {
+    card:        '#0d1117',
+    chipBg:      '#111827',
+    chipBorder:  '#1f2937',
+    divider:     '#1e293b',
+    langLabel:   '#374151',
+    legendText:  '#cbd5e1',
+    legendPct:   '#4b5563',
+    chipLabel:   '#4b5563',
+    valueText:   '#94a3b8',
+    timestamp:   '#1f2937',
+    dotColor:    '#ffffff',
+    dotOpacity:  0.07,
+    accentStops: ['#7c3aed', '#2563eb', '#0ea5e9'],
+    borderStops: [
+      { color: '#7c3aed', opacity: 0.70 },
+      { color: '#2563eb', opacity: 0.25 },
+      { color: '#0ea5e9', opacity: 0.70 },
+    ],
+    statColors:  ['#fbbf24', '#34d399', '#60a5fa', '#c084fc'],
+    aboutColors: ['#818cf8', '#34d399', '#f472b6'],
+  },
+
+  nord: {
+    // Polar Night + Snow Storm + Frost + Aurora palette
+    card:        '#2e3440',
+    chipBg:      '#3b4252',
+    chipBorder:  '#434c5e',
+    divider:     '#434c5e',
+    langLabel:   '#4c566a',
+    legendText:  '#d8dee9',
+    legendPct:   '#4c566a',
+    chipLabel:   '#4c566a',
+    valueText:   '#d8dee9',
+    timestamp:   '#4c566a',
+    dotColor:    '#eceff4',
+    dotOpacity:  0.05,
+    accentStops: ['#8fbcbb', '#81a1c1', '#5e81ac'],
+    borderStops: [
+      { color: '#88c0d0', opacity: 0.70 },
+      { color: '#5e81ac', opacity: 0.25 },
+      { color: '#81a1c1', opacity: 0.70 },
+    ],
+    statColors:  ['#ebcb8b', '#a3be8c', '#88c0d0', '#b48ead'],
+    aboutColors: ['#81a1c1', '#a3be8c', '#d08770'],
+  },
+
+  catppuccin: {
+    // Mocha flavour
+    card:        '#1e1e2e',
+    chipBg:      '#313244',
+    chipBorder:  '#45475a',
+    divider:     '#313244',
+    langLabel:   '#585b70',
+    legendText:  '#cdd6f4',
+    legendPct:   '#6c7086',
+    chipLabel:   '#6c7086',
+    valueText:   '#a6adc8',
+    timestamp:   '#45475a',
+    dotColor:    '#cdd6f4',
+    dotOpacity:  0.04,
+    accentStops: ['#cba6f7', '#89b4fa', '#89dceb'],
+    borderStops: [
+      { color: '#cba6f7', opacity: 0.70 },
+      { color: '#89b4fa', opacity: 0.25 },
+      { color: '#89dceb', opacity: 0.70 },
+    ],
+    statColors:  ['#f9e2af', '#a6e3a1', '#89b4fa', '#cba6f7'],
+    aboutColors: ['#cba6f7', '#a6e3a1', '#f38ba8'],
+  },
+};
+
+const activeTheme =
+  THEMES[(process.env.WIDGET_THEME ?? 'default').toLowerCase()] ?? THEMES.default;
+
 // ── Language colors (GitHub-style) ────────────────────────────────────────────
 const LANG_COLORS = {
   JavaScript:  '#f1e05a',  TypeScript:  '#3178c6',  Python:   '#3572A5',
@@ -188,8 +266,30 @@ function fmt(n) {
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+// ── About text wrapping ────────────────────────────────────────────────────────
+// Splits at ' · ' first, then spaces, to fit within availWidth px (12px font).
+function wrapAbout(text, availWidth) {
+  const MAX_CHARS = Math.floor(availWidth / 6.6); // approx width per char at 12px
+  if (text.length <= MAX_CHARS) return [text];
+
+  function pack(tokens, sep) {
+    const lines = [];
+    let line = '';
+    for (const tok of tokens) {
+      const candidate = line ? `${line}${sep}${tok}` : tok;
+      if (candidate.length <= MAX_CHARS) { line = candidate; }
+      else { if (line) lines.push(line); line = tok; }
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  const dotTokens = text.split(/\s+·\s+/);
+  if (dotTokens.length > 1) return pack(dotTokens, ' · ');
+  return pack(text.split(' '), ' ');
+}
+
 // ── Icons (16 × 16 octicon paths) ─────────────────────────────────────────────
-// All paths use fill="currentColor" or inherit from a parent fill attribute.
 const ICON = {
   star:     `<path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>`,
   commit:   `<path d="M11.93 8.5a4.002 4.002 0 01-7.86 0H.75a.75.75 0 010-1.5H4.07a4.002 4.002 0 017.86 0h3.32a.75.75 0 010 1.5zm-1.43-.75a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/>`,
@@ -201,43 +301,68 @@ const ICON = {
 };
 
 // ── SVG builder ────────────────────────────────────────────────────────────────
-function buildSVG({ login, totalStars, lifetimeContribs, recentContribs, linesOfCode, languages }) {
-  const W      = 495;
-  const PAD    = 22;
+function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, languages }) {
+  const T      = activeTheme;
+  const W      = 620;
+  const PAD    = 24;
   const RADIUS = 14;
 
   const langs   = languages.slice(0, MAX_LANGS);
   const totalSz = langs.reduce((s, l) => s + l.size, 0) || 1;
 
-  // ── Stat chips (4-column row) ─────────────────────────────────────────────────
-  const CHIP_GAP   = 10;
-  const CHIP_W     = Math.floor((W - PAD * 2 - CHIP_GAP * 3) / 4); // ~105
+  // ── Stat chips — 4 across, starting just below the top accent strip ───────────
+  const CHIP_GAP   = 12;
+  const CHIP_W     = Math.floor((W - PAD * 2 - CHIP_GAP * 3) / 4); // 134
   const CHIP_H     = 80;
-  const CHIPS_Y    = 82;                              // top of chips row
+  const CHIPS_Y    = 16;
   const chipStartX = Math.round((W - (CHIP_W * 4 + CHIP_GAP * 3)) / 2);
-  const chipXs     = [0, 1, 2, 3].map(i => chipStartX + i * (CHIP_W + CHIP_GAP));
+  const chipXs     = [0, 1, 2, 3].map((i) => chipStartX + i * (CHIP_W + CHIP_GAP));
 
   // ── Language section ──────────────────────────────────────────────────────────
-  const LANG_TOP    = CHIPS_Y + CHIP_H + 22;          // "LANGUAGES" label baseline
-  const SEGBAR_Y    = LANG_TOP + 9;                   // segmented bar top
+  const LANG_TOP    = CHIPS_Y + CHIP_H + 20;   // "LANGUAGES" label baseline
+  const SEGBAR_Y    = LANG_TOP + 10;
   const SEGBAR_H    = 12;
-  const LEGEND_Y    = SEGBAR_Y + SEGBAR_H + 14;       // legend rows start
+  const LEGEND_Y    = SEGBAR_Y + SEGBAR_H + 14;
   const LEGEND_ROW  = 22;
   const LEGEND_ROWS = Math.ceil(langs.length / 2);
 
-  // ── About / divider ───────────────────────────────────────────────────────────
-  const DIV_Y    = LEGEND_Y + LEGEND_ROWS * LEGEND_ROW + 10;
-  const ABOUT_Y  = DIV_Y + 18;
-  const ABOUT_ROW = 23;
+  // ── About section — pre-compute wrapped lines so height is known ──────────────
+  const ABOUT_INDENT  = PAD + 24;               // x where label/value text starts
+  const ABOUT_VALUE_W = W - ABOUT_INDENT - PAD; // available width for value text
+  const ABOUT_LABEL_H = 16;                     // px for the label line
+  const ABOUT_VALUE_H = 18;                     // px per value text line
+  const ABOUT_GAP     = 14;                     // gap between items
 
-  const H = ABOUT_Y + 3 * ABOUT_ROW + 16;
+  const aboutItems = [
+    { icon: ICON.terminal, color: T.aboutColors[0], label: 'IDE',      value: CUSTOM.ide      },
+    { icon: ICON.layers,   color: T.aboutColors[1], label: 'Stack',    value: CUSTOM.stack    },
+    { icon: ICON.book,     color: T.aboutColors[2], label: 'Learning', value: CUSTOM.learning },
+  ];
 
-  // ── Stat chip data ────────────────────────────────────────────────────────────
+  const aboutData = aboutItems.map((item) => ({
+    ...item,
+    lines: wrapAbout(item.value, ABOUT_VALUE_W),
+  }));
+
+  const totalAboutH = aboutData.reduce(
+    (sum, item) => sum + ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP, 0,
+  );
+
+  // ── Divider / About Y positions ───────────────────────────────────────────────
+  const DIV_Y   = LEGEND_Y + LEGEND_ROWS * LEGEND_ROW + 12;
+  const ABOUT_Y = DIV_Y + 18;
+  const H       = ABOUT_Y + totalAboutH + 12;
+
+  // ── Bar geometry ──────────────────────────────────────────────────────────────
+  const BAR_X = PAD;
+  const BAR_W = W - PAD * 2;
+
+  // ── Stat chips ────────────────────────────────────────────────────────────────
   const statsData = [
-    { label: 'TOTAL STARS',      value: fmt(totalStars),       color: '#fbbf24', icon: ICON.star   },
-    { label: 'LIFETIME COMMITS', value: fmt(lifetimeContribs), color: '#34d399', icon: ICON.commit },
-    { label: '14-DAY COMMITS',   value: fmt(recentContribs),   color: '#60a5fa', icon: ICON.clock  },
-    { label: 'LINES OF CODE',    value: fmt(linesOfCode),      color: '#c084fc', icon: ICON.code   },
+    { label: 'TOTAL STARS',      value: fmt(totalStars),       color: T.statColors[0], icon: ICON.star   },
+    { label: 'LIFETIME COMMITS', value: fmt(lifetimeContribs), color: T.statColors[1], icon: ICON.commit },
+    { label: '14-DAY COMMITS',   value: fmt(recentContribs),   color: T.statColors[2], icon: ICON.clock  },
+    { label: 'LINES OF CODE',    value: fmt(linesOfCode),      color: T.statColors[3], icon: ICON.code   },
   ];
 
   const chipsHtml = statsData.map((s, i) => {
@@ -245,18 +370,17 @@ function buildSVG({ login, totalStars, lifetimeContribs, recentContribs, linesOf
     const cx = x + Math.round(CHIP_W / 2);
     return `
   <rect x="${x}" y="${CHIPS_Y}" width="${CHIP_W}" height="${CHIP_H}" rx="10" ry="10"
-        fill="#111827" stroke="#1f2937" stroke-width="1"/>
-  <rect x="${x}" y="${CHIPS_Y + 18}" width="3" height="${CHIP_H - 36}" rx="1.5" fill="${s.color}" opacity="0.85"/>
+        fill="${T.chipBg}" stroke="${T.chipBorder}" stroke-width="1"/>
+  <rect x="${x}" y="${CHIPS_Y + 18}" width="3" height="${CHIP_H - 36}" rx="1.5"
+        fill="${s.color}" opacity="0.85"/>
   <g transform="translate(${cx - 8},${CHIPS_Y + 10})" fill="${s.color}">${s.icon}</g>
   <text x="${cx}" y="${CHIPS_Y + 46}" text-anchor="middle"
-        font-size="9.5" letter-spacing="0.6" fill="#4b5563">${esc(s.label)}</text>
+        font-size="9.5" letter-spacing="0.6" fill="${T.chipLabel}">${esc(s.label)}</text>
   <text x="${cx}" y="${CHIPS_Y + 68}" text-anchor="middle"
         font-size="20" font-weight="700" fill="${s.color}">${esc(s.value)}</text>`;
   }).join('');
 
-  // ── Language segmented bar (clipped to rounded rect) ─────────────────────────
-  const BAR_X = PAD;
-  const BAR_W = W - PAD * 2;
+  // ── Language segmented bar ────────────────────────────────────────────────────
   let runX = BAR_X;
   const segments = langs.map((l, i) => {
     const isLast = i === langs.length - 1;
@@ -269,121 +393,92 @@ function buildSVG({ login, totalStars, lifetimeContribs, recentContribs, linesOf
   }).join('');
 
   // ── Language legend (2-column) ────────────────────────────────────────────────
-  const colW   = Math.floor((W - PAD * 2 - 12) / 2);
+  const colW   = Math.floor((W - PAD * 2 - 16) / 2);
   const legend = langs.map((l, i) => {
     const col  = i % 2;
     const row  = Math.floor(i / 2);
-    const colX = PAD + col * (colW + 12);
+    const colX = PAD + col * (colW + 16);
     const y    = LEGEND_Y + row * LEGEND_ROW;
     const pct  = (l.size / totalSz * 100).toFixed(1) + '%';
-    const name = l.name.length > 15 ? `${l.name.slice(0, 14)}…` : l.name;
+    const name = l.name.length > 18 ? `${l.name.slice(0, 17)}…` : l.name;
     return `
   <circle cx="${colX + 5}" cy="${y + 5}" r="4.5" fill="${langColor(l.name)}"/>
-  <text x="${colX + 14}" y="${y + 10}" font-size="12" fill="#cbd5e1">${esc(name)}</text>
-  <text x="${colX + colW}" y="${y + 10}" font-size="12" fill="#4b5563" text-anchor="end">${esc(pct)}</text>`;
+  <text x="${colX + 14}" y="${y + 10}" font-size="12" fill="${T.legendText}">${esc(name)}</text>
+  <text x="${colX + colW}" y="${y + 10}" font-size="12" fill="${T.legendPct}"
+        text-anchor="end">${esc(pct)}</text>`;
   }).join('');
 
-  // ── About rows ────────────────────────────────────────────────────────────────
-  const aboutItems = [
-    { icon: ICON.terminal, color: '#818cf8', label: 'IDE',      value: CUSTOM.ide      },
-    { icon: ICON.layers,   color: '#34d399', label: 'Stack',    value: CUSTOM.stack    },
-    { icon: ICON.book,     color: '#f472b6', label: 'Learning', value: CUSTOM.learning },
-  ];
-
-  const aboutHtml = aboutItems.map((item, i) => {
-    const y = ABOUT_Y + i * ABOUT_ROW;
-    return `
-  <g transform="translate(${PAD},${y})" fill="${item.color}" color="${item.color}">${item.icon}</g>
-  <text x="${PAD + 22}" y="${y + 11}" font-size="12">
-    <tspan font-weight="700" fill="${item.color}">${esc(item.label)}</tspan
-    ><tspan fill="#475569" dx="7">${esc(item.value)}</tspan>
-  </text>`;
+  // ── About rows (label on one line, wrapped value below) ──────────────────────
+  let curY = ABOUT_Y;
+  const aboutHtml = aboutData.map((item) => {
+    const labelY      = curY + ABOUT_LABEL_H;
+    const firstValueY = labelY + ABOUT_VALUE_H - 1;
+    const chunk = `
+  <g transform="translate(${PAD},${curY})" fill="${item.color}" color="${item.color}">${item.icon}</g>
+  <text x="${ABOUT_INDENT}" y="${labelY}" font-size="10" font-weight="700"
+        letter-spacing="0.8" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
+  ${item.lines.map((line, li) =>
+    `<text x="${ABOUT_INDENT}" y="${firstValueY + li * ABOUT_VALUE_H}"
+           font-size="12.5" fill="${T.valueText}">${esc(line)}</text>`).join('')}`;
+    curY += ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
+    return chunk;
   }).join('');
 
   const updatedAt = new Date().toISOString().slice(0, 10);
 
+  // Inline gradient stops from theme
+  const accStops = T.accentStops
+    .map((c, i) => `<stop offset="${['0%','50%','100%'][i]}" stop-color="${c}"/>`)
+    .join('');
+  const bdrStops = T.borderStops
+    .map((s, i) => `<stop offset="${['0%','50%','100%'][i]}" stop-color="${s.color}" stop-opacity="${s.opacity}"/>`)
+    .join('');
+
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
-    <!-- Rounded clip for entire card -->
-    <clipPath id="card">
-      <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}"/>
-    </clipPath>
-    <!-- Header gradient: deep indigo → card bg -->
-    <linearGradient id="hdr" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="#1a1040"/>
-      <stop offset="100%" stop-color="#0d1117"/>
-    </linearGradient>
-    <!-- Header radial glow (purple spotlight at top-center) -->
-    <radialGradient id="hglow" cx="50%" cy="0%" r="75%" gradientUnits="objectBoundingBox">
-      <stop offset="0%"   stop-color="#5b21b6" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="#5b21b6" stop-opacity="0"/>
-    </radialGradient>
-    <!-- Accent strip: violet → blue → sky -->
-    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%"   stop-color="#7c3aed"/>
-      <stop offset="50%"  stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#0ea5e9"/>
-    </linearGradient>
-    <!-- Card border gradient -->
-    <linearGradient id="bdr" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%"   stop-color="#7c3aed" stop-opacity="0.7"/>
-      <stop offset="50%"  stop-color="#2563eb" stop-opacity="0.25"/>
-      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.7"/>
-    </linearGradient>
-    <!-- Dot grid pattern for header -->
+    <clipPath id="card"><rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}"/></clipPath>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">${accStops}</linearGradient>
+    <linearGradient id="bdr" x1="0" y1="0" x2="1" y2="1">${bdrStops}</linearGradient>
     <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-      <circle cx="10" cy="10" r="1" fill="white" opacity="0.07"/>
+      <circle cx="10" cy="10" r="1" fill="${T.dotColor}" opacity="${T.dotOpacity}"/>
     </pattern>
-    <!-- Clip for the language bar rounded ends -->
     <clipPath id="bar">
       <rect x="${BAR_X}" y="${SEGBAR_Y}" width="${BAR_W}" height="${SEGBAR_H}" rx="6" ry="6"/>
     </clipPath>
   </defs>
 
-  <!-- Card base -->
-  <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}" fill="#0d1117"/>
+  <!-- Card base + subtle dot texture -->
+  <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}" fill="${T.card}"/>
+  <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}" fill="url(#dots)" clip-path="url(#card)"/>
+
+  <!-- Top accent strip (replaces header) -->
+  <rect y="0" width="${W}" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
   <g clip-path="url(#card)" font-family="'Segoe UI',system-ui,sans-serif">
-
-    <!-- ── Header ───────────────────────────────────────────────────────── -->
-    <rect width="${W}" height="74" fill="url(#hdr)"/>
-    <rect width="${W}" height="74" fill="url(#hglow)"/>
-    <rect width="${W}" height="74" fill="url(#dots)"/>
-    <!-- Accent strip -->
-    <rect y="72" width="${W}" height="2" fill="url(#acc)"/>
-    <!-- Username -->
-    <text x="${W / 2}" y="34" text-anchor="middle"
-          font-size="20" font-weight="700" fill="#f1f5f9">${esc(login)}</text>
-    <!-- Subtitle -->
-    <text x="${W / 2}" y="56" text-anchor="middle"
-          font-size="10" letter-spacing="3" fill="#475569">GITHUB STATS</text>
 
     <!-- ── Stat chips ────────────────────────────────────────────────────── -->
     ${chipsHtml}
 
     <!-- ── Language section ──────────────────────────────────────────────── -->
     <text x="${PAD}" y="${LANG_TOP}"
-          font-size="9.5" letter-spacing="1.5" fill="#374151">LANGUAGES</text>
-    <!-- Segmented bar -->
+          font-size="9.5" letter-spacing="1.5" fill="${T.langLabel}">LANGUAGES</text>
     <g clip-path="url(#bar)">${segments}</g>
-    <!-- Legend -->
     ${legend}
 
     <!-- ── Divider ───────────────────────────────────────────────────────── -->
     <line x1="${PAD}" y1="${DIV_Y}" x2="${W - PAD}" y2="${DIV_Y}"
-          stroke="#1e293b" stroke-width="1"/>
+          stroke="${T.divider}" stroke-width="1"/>
 
     <!-- ── About ─────────────────────────────────────────────────────────── -->
     ${aboutHtml}
 
-    <!-- Updated timestamp -->
-    <text x="${W - PAD}" y="${H - 6}" font-size="9" fill="#1f2937" text-anchor="end">
-      updated ${updatedAt}
-    </text>
+    <!-- Timestamp -->
+    <text x="${W - PAD}" y="${H - 6}" font-size="9" fill="${T.timestamp}"
+          text-anchor="end">updated ${updatedAt}</text>
 
   </g>
 
-  <!-- Card border drawn over content -->
+  <!-- Card border drawn on top of content -->
   <rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}"
         fill="none" stroke="url(#bdr)" stroke-width="1.5"/>
 </svg>`;
@@ -391,12 +486,11 @@ function buildSVG({ login, totalStars, lifetimeContribs, recentContribs, linesOf
 
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log(`[widget] fetching data for ${USERNAME}`);
+  console.log(`[widget] fetching data for ${USERNAME} (theme: ${activeTheme === THEMES.default ? 'default' : (process.env.WIDGET_THEME ?? 'default')})`);
 
   const { createdAt, repos } = await fetchAllRepos();
   console.log(`[widget] ${repos.length} repos found`);
 
-  // Aggregate stars and language byte counts from repo metadata
   let totalStars = 0;
   const langMap  = new Map();
   for (const repo of repos) {

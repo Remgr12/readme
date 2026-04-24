@@ -35,6 +35,7 @@ jobs:
           GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
           # ── Customise your details here ───────────────────────────────────
+          WIDGET_THEME:    'default'   # 'default' | 'nord' | 'catppuccin'
           WIDGET_IDE:      'Neovim'
           WIDGET_STACK:    'Rust · TypeScript · React'
           WIDGET_LEARNING: 'WebAssembly · Distributed Systems'
