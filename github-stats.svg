@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="856" height="560" viewBox="0 0 856 560">
+<svg xmlns="http://www.w3.org/2000/svg" width="856" height="608" viewBox="0 0 856 608">
   <defs>
     <style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Space+Mono:wght@400;700&amp;display=swap');</style>
-    <clipPath id="card"><rect width="856" height="560" rx="14" ry="14"/></clipPath>
+    <clipPath id="card"><rect width="856" height="608" rx="14" ry="14"/></clipPath>
     <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8fbcbb"/><stop offset="50%" stop-color="#81a1c1"/><stop offset="100%" stop-color="#5e81ac"/></linearGradient>
     <linearGradient id="bdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#88c0d0" stop-opacity="0.7"/><stop offset="50%" stop-color="#5e81ac" stop-opacity="0.25"/><stop offset="100%" stop-color="#81a1c1" stop-opacity="0.7"/></linearGradient>
     <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -12,8 +12,8 @@
     </clipPath>
   </defs>
 
-  <rect width="856" height="560" rx="14" ry="14" fill="#2e3440"/>
-  <rect width="856" height="560" rx="14" ry="14" fill="url(#dots)" clip-path="url(#card)"/>
+  <rect width="856" height="608" rx="14" ry="14" fill="#2e3440"/>
+  <rect width="856" height="608" rx="14" ry="14" fill="url(#dots)" clip-path="url(#card)"/>
 
   <rect y="0" width="856" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
@@ -37,7 +37,7 @@
   <text x="326" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="326" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">422</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">425</text>
   <rect x="434" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="434" y="34" width="3" height="44" rx="1.5"
@@ -46,7 +46,7 @@
   <text x="531" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="531" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#88c0d0">87</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#88c0d0">90</text>
   <rect x="639" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="639" y="34" width="3" height="44" rx="1.5"
@@ -55,7 +55,7 @@
   <text x="736" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">33.4k</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">55.6k</text>
 
     <text x="24" y="116"
           font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="1.2" fill="#d8dee9">LANGUAGES</text>
@@ -98,23 +98,27 @@
   <text x="48" y="360" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#d08770">LEARNING</text>
   <text x="48" y="377"
              font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">WebAssembly · Odin · Kotlin · Rust (further)</text>
-  <line x1="24" y1="396" x2="832" y2="396" stroke="#434c5e" stroke-width="1"/>
-  <g transform="translate(24,416)" fill="#ebcb8b" color="#ebcb8b"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/></g>
-  <text x="48" y="432" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#ebcb8b">CONTACT</text>
-  <text x="48" y="449"
-             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Email: zsombor@remgr.dev | zsombor@mailbox.org</text><text x="48" y="467"
-             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Discord: remgr</text><text x="48" y="485"
+  <g transform="translate(24,392)" fill="#8fbcbb" color="#8fbcbb"><path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h4.586a1.5 1.5 0 0 1 1.06.44l6.5 6.5a1.5 1.5 0 0 1 0 2.12l-4.586 4.585a1.5 1.5 0 0 1-2.12 0l-6.5-6.5A1.5 1.5 0 0 1 1 7.085zm3.5 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></g>
+  <text x="48" y="408" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#8fbcbb">OTHER</text>
+  <text x="48" y="425"
+             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">IKT/ICT · Distributed Systems</text>
+  <line x1="24" y1="444" x2="832" y2="444" stroke="#434c5e" stroke-width="1"/>
+  <g transform="translate(24,464)" fill="#ebcb8b" color="#ebcb8b"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/></g>
+  <text x="48" y="480" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#ebcb8b">CONTACT</text>
+  <text x="48" y="497"
+             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Email: zsombor@remgr.dev | zsombor@mailbox.org</text><text x="48" y="515"
+             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Discord: remgr</text><text x="48" y="533"
              font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Telegram: @Remgr12</text>
-  <g transform="translate(24,500)" fill="#b48ead" color="#b48ead"><path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></g>
-  <text x="48" y="516" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#b48ead">LOCATION</text>
-  <a href="https://www.openstreetmap.org/search?query=Salzburg%20State" target="_blank"><text x="48" y="533"
+  <g transform="translate(24,548)" fill="#b48ead" color="#b48ead"><path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></g>
+  <text x="48" y="564" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#b48ead">LOCATION</text>
+  <a href="https://www.openstreetmap.org/search?query=Salzburg%20State" target="_blank"><text x="48" y="581"
              font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Salzburg State</text></a>
 
-    <text x="832" y="554" font-family="'Space Mono', 'Courier New', monospace" font-size="10" fill="#81a1c1"
+    <text x="832" y="602" font-family="'Space Mono', 'Courier New', monospace" font-size="10" fill="#81a1c1"
           text-anchor="end">updated 2026-04-25</text>
 
   </g>
 
-  <rect width="856" height="560" rx="14" ry="14"
+  <rect width="856" height="608" rx="14" ry="14"
         fill="none" stroke="url(#bdr)" stroke-width="1.5"/>
 </svg>
