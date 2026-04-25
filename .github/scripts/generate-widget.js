@@ -391,7 +391,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
         fill="${s.color}" opacity="0.85"/>
   <g transform="translate(${cx - 8},${CHIPS_Y + 10})" fill="${s.color}">${s.icon}</g>
   <text x="${cx}" y="${CHIPS_Y + 46}" text-anchor="middle"
-        font-family="${FONT_LABEL}" font-weight="bold" font-size="9" letter-spacing="0.6" fill="${T.chipLabel}">${esc(s.label)}</text>
+        font-family="${FONT_LABEL}" font-weight="bold" font-size="11" letter-spacing="0.4" fill="${T.chipLabel}">${esc(s.label)}</text>
   <text x="${cx}" y="${CHIPS_Y + 68}" text-anchor="middle"
         font-family="${FONT_BODY}" font-size="20" font-weight="bold" fill="${s.color}">${esc(s.value)}</text>`;
   }).join('');
@@ -445,7 +445,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
     const chunk = `
   <g transform="translate(${PAD},${curY})" fill="${item.color}" color="${item.color}">${item.icon}</g>
-  <text x="${ABOUT_INDENT}" y="${labelY}" font-family="${FONT_LABEL}" font-weight="bold" font-size="9" letter-spacing="1" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
+  <text x="${ABOUT_INDENT}" y="${labelY}" font-family="${FONT_LABEL}" font-weight="bold" font-size="11" letter-spacing="0.8" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
   ${linesHtml}`;
     curY += ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
     return chunk;
@@ -484,7 +484,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     ${chipsHtml}
 
     <text x="${PAD}" y="${LANG_TOP}"
-          font-family="${FONT_LABEL}" font-weight="bold" font-size="9" letter-spacing="1.5" fill="${T.langLabel}">LANGUAGES</text>
+          font-family="${FONT_LABEL}" font-weight="bold" font-size="11" letter-spacing="1.2" fill="${T.langLabel}">LANGUAGES</text>
     <g clip-path="url(#bar)">${segments}</g>
     ${legend}
 
@@ -493,7 +493,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
     ${aboutHtml}
 
-    <text x="${W - PAD}" y="${H - 6}" font-family="${FONT_LABEL}" font-size="9" fill="${T.timestamp}"
+    <text x="${W - PAD}" y="${H - 6}" font-family="${FONT_LABEL}" font-size="10" fill="${T.timestamp}"
           text-anchor="end">updated ${updatedAt}</text>
 
   </g>
