@@ -69,4 +69,6 @@ jobs:
           fi
 
           git commit -m "chore: update github stats widget [skip ci]"
+          
+          git pull --rebase origin main
           git push origin main
