@@ -55,32 +55,32 @@
   <text x="736" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">32.5k</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">23.9k</text>
 
     <text x="24" y="116"
           font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="1.2" fill="#d8dee9">LANGUAGES</text>
-    <g clip-path="url(#bar)"><rect x="24" y="126" width="456" height="12" fill="#b07219"/><rect x="480" y="126" width="275" height="12" fill="#dea584"/><rect x="755" y="126" width="41" height="12" fill="#89e051"/><rect x="796" y="126" width="32" height="12" fill="#3572A5"/><rect x="828" y="126" width="4" height="12" fill="#e34c26"/></g>
+    <g clip-path="url(#bar)"><rect x="24" y="126" width="300" height="12" fill="#A97BFF"/><rect x="324" y="126" width="294" height="12" fill="#b07219"/><rect x="618" y="126" width="169" height="12" fill="#dea584"/><rect x="787" y="126" width="25" height="12" fill="#89e051"/><rect x="812" y="126" width="20" height="12" fill="#3572A5"/></g>
     
-  <circle cx="29" cy="157" r="4.5" fill="#b07219"/>
-  <text x="38" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Java</text>
+  <circle cx="29" cy="157" r="4.5" fill="#A97BFF"/>
+  <text x="38" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Kotlin</text>
   <text x="420" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">56.4%</text>
-  <circle cx="441" cy="157" r="4.5" fill="#dea584"/>
-  <text x="450" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Rust</text>
+        text-anchor="end">37.1%</text>
+  <circle cx="441" cy="157" r="4.5" fill="#b07219"/>
+  <text x="450" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Java</text>
   <text x="832" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">34.0%</text>
-  <circle cx="29" cy="179" r="4.5" fill="#89e051"/>
-  <text x="38" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Shell</text>
+        text-anchor="end">36.4%</text>
+  <circle cx="29" cy="179" r="4.5" fill="#dea584"/>
+  <text x="38" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Rust</text>
   <text x="420" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">5.1%</text>
-  <circle cx="441" cy="179" r="4.5" fill="#3572A5"/>
-  <text x="450" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Python</text>
+        text-anchor="end">20.9%</text>
+  <circle cx="441" cy="179" r="4.5" fill="#89e051"/>
+  <text x="450" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Shell</text>
   <text x="832" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">4.0%</text>
-  <circle cx="29" cy="201" r="4.5" fill="#e34c26"/>
-  <text x="38" y="206" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">HTML</text>
+        text-anchor="end">3.1%</text>
+  <circle cx="29" cy="201" r="4.5" fill="#3572A5"/>
+  <text x="38" y="206" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Python</text>
   <text x="420" y="206" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">0.5%</text>
+        text-anchor="end">2.4%</text>
 
     <line x1="24" y1="230" x2="832" y2="230"
           stroke="#434c5e" stroke-width="1"/>
