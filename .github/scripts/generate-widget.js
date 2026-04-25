@@ -170,8 +170,8 @@ async function fetchContributorStats(nameWithOwner, attempt = 0) {
   try { return JSON.parse(res.body); } catch { return null; }
 }
 
-// ── Data: all non-fork repos (paginated) ──────────────────────────────────────
-async function fetchAllRepos(after = null, acc = []) {
+// ── Data: personal repos (paginated) ─────────────────────────────────────────
+async function fetchPersonalRepos(after = null, acc = []) {
   const data = await gqlRequest(`
     query($login: String!, $after: String) {
       user(login: $login) {
@@ -179,13 +179,13 @@ async function fetchAllRepos(after = null, acc = []) {
         repositories(
           first: 100
           ownerAffiliations: OWNER
-          isFork: false
           after: $after
           orderBy: { field: PUSHED_AT, direction: DESC }
         ) {
           nodes {
             nameWithOwner
             stargazerCount
+            isFork
             languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
               edges { size node { name } }
             }
@@ -196,13 +196,84 @@ async function fetchAllRepos(after = null, acc = []) {
     }
   `, { login: USERNAME, after });
 
-  const { createdAt, repositories } = data.user;
-  acc.push(...repositories.nodes);
+  const user = data.user;
+  acc.push(...user.repositories.nodes);
 
-  if (repositories.pageInfo.hasNextPage) {
-    return fetchAllRepos(repositories.pageInfo.endCursor, acc);
+  if (user.repositories.pageInfo.hasNextPage) {
+    return fetchPersonalRepos(user.repositories.pageInfo.endCursor, acc);
   }
-  return { createdAt, repos: acc };
+  return { createdAt: user.createdAt, repos: acc };
+}
+
+// ── Data: repos from a single org (paginated) ────────────────────────────────
+async function fetchOrgRepos(orgLogin, after = null, acc = []) {
+  const data = await gqlRequest(`
+    query($org: String!, $after: String) {
+      organization(login: $org) {
+        repositories(
+          first: 100
+          after: $after
+          orderBy: { field: PUSHED_AT, direction: DESC }
+        ) {
+          nodes {
+            nameWithOwner
+            stargazerCount
+            isFork
+            languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
+              edges { size node { name } }
+            }
+          }
+          pageInfo { hasNextPage endCursor }
+        }
+      }
+    }
+  `, { org: orgLogin, after });
+
+  acc.push(...data.organization.repositories.nodes);
+
+  if (data.organization.repositories.pageInfo.hasNextPage) {
+    return fetchOrgRepos(orgLogin, data.organization.repositories.pageInfo.endCursor, acc);
+  }
+  return acc;
+}
+
+// ── Data: all orgs the user belongs to ───────────────────────────────────────
+async function fetchUserOrgs() {
+  const data = await gqlRequest(`
+    query($login: String!) {
+      user(login: $login) {
+        organizations(first: 100) {
+          nodes { login }
+        }
+      }
+    }
+  `, { login: USERNAME });
+  return data.user.organizations.nodes.map((o) => o.login);
+}
+
+// ── Data: all repos — personal + all orgs ────────────────────────────────────
+async function fetchAllRepos() {
+  const [{ createdAt, repos: personalRepos }, orgs] = await Promise.all([
+    fetchPersonalRepos(),
+    fetchUserOrgs(),
+  ]);
+
+  console.log(`[widget] ${personalRepos.length} personal repos, ${orgs.length} org(s): ${orgs.join(', ') || 'none'}`);
+
+  const orgRepoLists = await Promise.allSettled(orgs.map((org) => fetchOrgRepos(org)));
+  const orgRepos = orgRepoLists
+    .filter((r) => r.status === 'fulfilled')
+    .flatMap((r) => r.value);
+
+  // Deduplicate by nameWithOwner in case of overlap
+  const seen = new Set();
+  const allRepos = [...personalRepos, ...orgRepos].filter((r) => {
+    if (seen.has(r.nameWithOwner)) return false;
+    seen.add(r.nameWithOwner);
+    return true;
+  });
+
+  return { createdAt, repos: allRepos };
 }
 
 // ── Data: contributions within a date window ──────────────────────────────────
@@ -505,7 +576,7 @@ async function main() {
   console.log(`[widget] fetching data for ${USERNAME} (theme: ${activeTheme === THEMES.default ? 'default' : (process.env.WIDGET_THEME ?? 'default')})`);
 
   const { createdAt, repos } = await fetchAllRepos();
-  console.log(`[widget] ${repos.length} repos found`);
+  console.log(`[widget] ${repos.length} total repos (personal + org)`);
 
   let totalStars = 0;
   const langMap  = new Map();
