@@ -37,7 +37,7 @@
   <text x="326" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="326" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">392</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">416</text>
   <rect x="434" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="434" y="34" width="3" height="44" rx="1.5"
@@ -46,7 +46,7 @@
   <text x="531" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="531" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#88c0d0">57</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#88c0d0">81</text>
   <rect x="639" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="639" y="34" width="3" height="44" rx="1.5"
@@ -55,7 +55,7 @@
   <text x="736" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">33.1k</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">32.8k</text>
 
     <text x="24" y="116"
           font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="1.2" fill="#d8dee9">LANGUAGES</text>
