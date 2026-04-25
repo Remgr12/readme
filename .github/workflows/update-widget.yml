@@ -27,6 +27,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure main is up to date
+        run: |
+          set -euo pipefail
+          git checkout main
+          git pull --ff-only origin main
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -52,19 +58,15 @@ jobs:
 
       - name: Commit and push
         run: |
-         set -e
-         git config user.name  "github-actions[bot]"
-         git config user.email "github-actions[bot]@users.noreply.github.com"
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-         git add github-stats.svg
-         if git diff --staged --quiet; then
-           echo "No changes"
-           exit 0
-         fi
+          git add github-stats.svg
+          if git diff --staged --quiet; then
+            echo "No changes"
+            exit 0
+          fi
 
-         git commit -m "chore: update github stats widget [skip ci]"
-
-         git fetch origin main
-         git rebase origin/main
-
-         git push origin HEAD:main
+          git commit -m "chore: update github stats widget [skip ci]"
+          git push origin main
