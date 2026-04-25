@@ -45,8 +45,9 @@ jobs:
           # ── Customise your details here ───────────────────────────────────
           WIDGET_THEME:    'nord'   # 'default' | 'nord' | 'catppuccin'
           WIDGET_IDE:      'Neovim'
-          WIDGET_STACK:    'Rust · TypeScript · JavaScript · HTML · CSS · Python · Java · Ruby · Lua · Node.js'
-          WIDGET_LEARNING: 'WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)'
+          WIDGET_STACK:    'Kotlin · Java · Rust · JavaScript, HTML, CSS · TypeScript · Python'
+          WIDGET_LEARNING: 'WebAssembly · Odin · Kotlin · Rust (further)'
+          WIDGET_OTHER:    'IKT/ICT · Distributed Systems'
           WIDGET_CONTACT:  |-
             Email: zsombor@remgr.dev | zsombor@mailbox.org
             Discord: remgr
