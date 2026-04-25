@@ -27,6 +27,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure main is up to date
+        run: |
+          set -euo pipefail
+          git checkout main
+          git pull --ff-only origin main
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -55,9 +61,6 @@ jobs:
           set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git checkout main
-          git pull --ff-only origin main
 
           git add github-stats.svg
           if git diff --staged --quiet; then
