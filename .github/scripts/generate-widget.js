@@ -576,11 +576,15 @@ async function main() {
   console.log(`[widget] fetching data for ${USERNAME} (theme: ${activeTheme === THEMES.default ? 'default' : (process.env.WIDGET_THEME ?? 'default')})`);
 
   const { createdAt, repos } = await fetchAllRepos();
-  console.log(`[widget] ${repos.length} total repos (personal + org)`);
+  const ownedRepos = repos.filter((r) => !r.isFork);
+  const forkRepos  = repos.filter((r) =>  r.isFork);
+  console.log(`[widget] ${repos.length} total repos (${ownedRepos.length} owned, ${forkRepos.length} forks)`);
 
+  // Stars and language breakdown: owned repos only, so forked codebases
+  // don't skew the language graph toward languages you didn't really choose.
   let totalStars = 0;
   const langMap  = new Map();
-  for (const repo of repos) {
+  for (const repo of ownedRepos) {
     totalStars += repo.stargazerCount;
     for (const { size, node } of repo.languages.edges) {
       langMap.set(node.name, (langMap.get(node.name) ?? 0) + size);
@@ -596,7 +600,9 @@ async function main() {
   console.log('[widget] fetching 14-day contributions…');
   const recentContribs = await fetchRecentContribs();
 
-  console.log(`[widget] fetching lines of code across all ${repos.length} repos…`);
+  // LOC: all repos including forks, but contributor stats filter to your
+  // commits only, so you only count lines you actually wrote.
+  console.log(`[widget] fetching lines of code across all ${repos.length} repos (including forks)…`);
   const linesOfCode = await fetchLinesOfCode(repos);
 
   console.log(`[widget] stars=${totalStars}  lifetime=${lifetimeContribs}  14d=${recentContribs}  loc=${linesOfCode}`);
