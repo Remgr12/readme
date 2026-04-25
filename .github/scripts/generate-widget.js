@@ -17,9 +17,8 @@ const CUSTOM = {
   location: process.env.WIDGET_LOCATION || '',
 };
 
-const MAX_LANGS     = 5;
-const MAX_LOC_REPOS = 25;
-const OUTPUT_FILE   = process.env.OUTPUT_FILE ?? 'github-stats.svg';
+const MAX_LANGS   = 5;
+const OUTPUT_FILE = process.env.OUTPUT_FILE ?? 'github-stats.svg';
 
 // ── Fonts ──────────────────────────────────────────────────────────────────────
 // JetBrains Mono  → stat values, body text, timestamps
@@ -241,20 +240,18 @@ async function fetchRecentContribs() {
   return fetchContributions(from.toISOString(), to.toISOString());
 }
 
-// ── Data: lines of code (additions + deletions across top repos) ──────────────
+// ── Data: lines of code (additions across ALL owned repos) ───────────────────
+// Uses additions only (not +deletions) to avoid double-counting rewrites.
 async function fetchLinesOfCode(repos) {
-  const top     = [...repos]
-    .sort((a, b) => b.stargazerCount - a.stargazerCount)
-    .slice(0, MAX_LOC_REPOS);
   let total = 0;
   const results = await Promise.allSettled(
-    top.map(async (repo) => {
+    repos.map(async (repo) => {
       const stats = await fetchContributorStats(repo.nameWithOwner);
       if (!Array.isArray(stats)) return 0;
       const mine = stats.find(
         (s) => s.author?.login?.toLowerCase() === USERNAME.toLowerCase(),
       );
-      return mine ? mine.weeks.reduce((s, w) => s + w.a + w.d, 0) : 0;
+      return mine ? mine.weeks.reduce((s, w) => s + w.a, 0) : 0;
     }),
   );
   for (const r of results) {
@@ -528,7 +525,7 @@ async function main() {
   console.log('[widget] fetching 14-day contributions…');
   const recentContribs = await fetchRecentContribs();
 
-  console.log(`[widget] fetching lines of code (up to ${MAX_LOC_REPOS} repos)…`);
+  console.log(`[widget] fetching lines of code across all ${repos.length} repos…`);
   const linesOfCode = await fetchLinesOfCode(repos);
 
   console.log(`[widget] stars=${totalStars}  lifetime=${lifetimeContribs}  14d=${recentContribs}  loc=${linesOfCode}`);
