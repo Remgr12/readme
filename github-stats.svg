@@ -36,7 +36,7 @@
   <text x="326" y="62" text-anchor="middle"
         font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="326" y="84" text-anchor="middle"
-        font-size="20" font-weight="bold" fill="#a3be8c">386</text>
+        font-size="20" font-weight="bold" fill="#a3be8c">387</text>
   <rect x="434" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="434" y="34" width="3" height="44" rx="1.5"
@@ -45,7 +45,7 @@
   <text x="531" y="62" text-anchor="middle"
         font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="531" y="84" text-anchor="middle"
-        font-size="20" font-weight="bold" fill="#88c0d0">51</text>
+        font-size="20" font-weight="bold" fill="#88c0d0">52</text>
   <rect x="639" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="639" y="34" width="3" height="44" rx="1.5"
@@ -54,7 +54,7 @@
   <text x="736" y="62" text-anchor="middle"
         font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-size="20" font-weight="bold" fill="#b48ead">24.7k</text>
+        font-size="20" font-weight="bold" fill="#b48ead">36.8k</text>
 
     <text x="24" y="116"
           font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1.5" fill="#d8dee9">LANGUAGES</text>
@@ -102,7 +102,7 @@
   <text x="48" y="432" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#ebcb8b">CONTACT</text>
   <text x="48" y="449"
              font-size="12.5" fill="#eceff4">Email: zsombor@remgr.dev | zsombor@mailbox.org</text><text x="48" y="467"
-             font-size="12.5" fill="#eceff4">Discord: Remgr</text><text x="48" y="485"
+             font-size="12.5" fill="#eceff4">Discord: remgr</text><text x="48" y="485"
              font-size="12.5" fill="#eceff4">Telegram: @Remgr12</text>
   <g transform="translate(24,500)" fill="#b48ead" color="#b48ead"><path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/></g>
   <text x="48" y="516" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="#b48ead">LOCATION</text>
