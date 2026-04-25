@@ -41,7 +41,7 @@ jobs:
           WIDGET_LEARNING: 'WebAssembly · Distributed Systems · Odin · Kotlin · Rust (further)'
           WIDGET_CONTACT:  |-
             Email: zsombor@remgr.dev | zsombor@mailbox.org
-            Discord: Remgr
+            Discord: remgr
             Telegram: @Remgr12
           WIDGET_LOCATION: 'Salzburg State'
           # ─────────────────────────────────────────────────────────────────
