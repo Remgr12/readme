@@ -21,6 +21,13 @@ const MAX_LANGS     = 5;
 const MAX_LOC_REPOS = 25;
 const OUTPUT_FILE   = process.env.OUTPUT_FILE ?? 'github-stats.svg';
 
+// ── Fonts ──────────────────────────────────────────────────────────────────────
+// JetBrains Mono  → stat values, body text, timestamps
+// Space Mono      → uppercase labels (TOTAL STARS, LANGUAGES, IDE, etc.)
+const FONT_LABEL = `'Space Mono', 'Courier New', monospace`;
+const FONT_BODY  = `'JetBrains Mono', 'Courier New', monospace`;
+const FONT_EMBED = `<style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Space+Mono:wght@400;700&amp;display=swap');</style>`;
+
 // ── Themes ─────────────────────────────────────────────────────────────────────
 // Select via WIDGET_THEME env var: 'default' | 'nord' | 'catppuccin'
 const THEMES = {
@@ -48,7 +55,6 @@ const THEMES = {
   },
 
   nord: {
-    // Polar Night + Snow Storm + Frost + Aurora palette
     card:        '#2e3440',
     chipBg:      '#3b4252',
     chipBorder:  '#4c566a',
@@ -72,7 +78,6 @@ const THEMES = {
   },
 
   catppuccin: {
-    // Mocha flavour
     card:        '#1e1e2e',
     chipBg:      '#313244',
     chipBorder:  '#45475a',
@@ -269,11 +274,11 @@ const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 // ── About text wrapping ────────────────────────────────────────────────────────
-// Splits at ' · ' first, then spaces, to fit within availWidth px (12px font).
+// JetBrains Mono is slightly wider than Arial — use 7.2px per char at 12px
 function wrapAbout(text, availWidth) {
   if (text.includes('\n')) return text.split('\n');
 
-  const MAX_CHARS = Math.floor(availWidth / 6.6); // approx width per char at 12px
+  const MAX_CHARS = Math.floor(availWidth / 7.2);
   if (text.length <= MAX_CHARS) return [text];
 
   function pack(tokens, sep) {
@@ -316,28 +321,28 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
   const langs   = languages.slice(0, MAX_LANGS);
   const totalSz = langs.reduce((s, l) => s + l.size, 0) || 1;
 
-  // ── Stat chips — 4 across, starting just below the top accent strip ───────────
+  // ── Stat chips — 4 across ─────────────────────────────────────────────────────
   const CHIP_GAP   = 12;
-  const CHIP_W     = Math.floor((W - PAD * 2 - CHIP_GAP * 3) / 4); // 134
+  const CHIP_W     = Math.floor((W - PAD * 2 - CHIP_GAP * 3) / 4);
   const CHIP_H     = 80;
   const CHIPS_Y    = 16;
   const chipStartX = Math.round((W - (CHIP_W * 4 + CHIP_GAP * 3)) / 2);
   const chipXs     = [0, 1, 2, 3].map((i) => chipStartX + i * (CHIP_W + CHIP_GAP));
 
   // ── Language section ──────────────────────────────────────────────────────────
-  const LANG_TOP    = CHIPS_Y + CHIP_H + 20;   // "LANGUAGES" label baseline
+  const LANG_TOP    = CHIPS_Y + CHIP_H + 20;
   const SEGBAR_Y    = LANG_TOP + 10;
   const SEGBAR_H    = 12;
   const LEGEND_Y    = SEGBAR_Y + SEGBAR_H + 14;
   const LEGEND_ROW  = 22;
   const LEGEND_ROWS = Math.ceil(langs.length / 2);
 
-  // ── About section — pre-compute wrapped lines so height is known ──────────────
-  const ABOUT_INDENT  = PAD + 24;               // x where label/value text starts
-  const ABOUT_VALUE_W = W - ABOUT_INDENT - PAD; // available width for value text
-  const ABOUT_LABEL_H = 16;                     // px for the label line
-  const ABOUT_VALUE_H = 18;                     // px per value text line
-  const ABOUT_GAP     = 14;                     // gap between items
+  // ── About section ─────────────────────────────────────────────────────────────
+  const ABOUT_INDENT  = PAD + 24;
+  const ABOUT_VALUE_W = W - ABOUT_INDENT - PAD;
+  const ABOUT_LABEL_H = 16;
+  const ABOUT_VALUE_H = 18;
+  const ABOUT_GAP     = 14;
 
   const aboutItems = [
     { icon: ICON.terminal, color: T.aboutColors[0], label: 'IDE',      value: CUSTOM.ide      },
@@ -348,16 +353,12 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     { icon: ICON.location, color: T.aboutColors[4], label: 'Location', value: CUSTOM.location, link: CUSTOM.location ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(CUSTOM.location)}` : '' },
   ].filter(item => item.separator || item.value);
 
-  // Clean up leading/trailing separators and duplicates
   while (aboutItems.length && aboutItems[0].separator) aboutItems.shift();
   while (aboutItems.length && aboutItems[aboutItems.length - 1].separator) aboutItems.pop();
 
   const aboutData = aboutItems.map((item) => {
     if (item.separator) return item;
-    return {
-      ...item,
-      lines: wrapAbout(item.value, ABOUT_VALUE_W),
-    };
+    return { ...item, lines: wrapAbout(item.value, ABOUT_VALUE_W) };
   });
 
   const totalAboutH = aboutData.reduce((sum, item) => {
@@ -365,12 +366,10 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     return sum + ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
   }, 0);
 
-  // ── Divider / About Y positions ───────────────────────────────────────────────
   const DIV_Y   = LEGEND_Y + LEGEND_ROWS * LEGEND_ROW + 12;
   const ABOUT_Y = DIV_Y + 18;
   const H       = ABOUT_Y + totalAboutH + 12;
 
-  // ── Bar geometry ──────────────────────────────────────────────────────────────
   const BAR_X = PAD;
   const BAR_W = W - PAD * 2;
 
@@ -392,9 +391,9 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
         fill="${s.color}" opacity="0.85"/>
   <g transform="translate(${cx - 8},${CHIPS_Y + 10})" fill="${s.color}">${s.icon}</g>
   <text x="${cx}" y="${CHIPS_Y + 46}" text-anchor="middle"
-        font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="0.8" fill="${T.chipLabel}">${esc(s.label)}</text>
+        font-family="${FONT_LABEL}" font-weight="bold" font-size="9" letter-spacing="0.6" fill="${T.chipLabel}">${esc(s.label)}</text>
   <text x="${cx}" y="${CHIPS_Y + 68}" text-anchor="middle"
-        font-size="20" font-weight="bold" fill="${s.color}">${esc(s.value)}</text>`;
+        font-family="${FONT_BODY}" font-size="20" font-weight="bold" fill="${s.color}">${esc(s.value)}</text>`;
   }).join('');
 
   // ── Language segmented bar ────────────────────────────────────────────────────
@@ -420,12 +419,12 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     const name = l.name.length > 18 ? `${l.name.slice(0, 17)}…` : l.name;
     return `
   <circle cx="${colX + 5}" cy="${y + 5}" r="4.5" fill="${langColor(l.name)}"/>
-  <text x="${colX + 14}" y="${y + 10}" font-size="12" fill="${T.legendText}">${esc(name)}</text>
-  <text x="${colX + colW}" y="${y + 10}" font-size="12" fill="${T.legendPct}"
+  <text x="${colX + 14}" y="${y + 10}" font-family="${FONT_BODY}" font-size="12" fill="${T.legendText}">${esc(name)}</text>
+  <text x="${colX + colW}" y="${y + 10}" font-family="${FONT_BODY}" font-size="12" fill="${T.legendPct}"
         text-anchor="end">${esc(pct)}</text>`;
   }).join('');
 
-  // ── About rows (label on one line, wrapped value below) ──────────────────────
+  // ── About rows ────────────────────────────────────────────────────────────────
   let curY = ABOUT_Y;
   const aboutHtml = aboutData.map((item) => {
     if (item.separator) {
@@ -438,7 +437,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     const firstValueY = labelY + ABOUT_VALUE_H - 1;
     let linesHtml = item.lines.map((line, li) =>
       `<text x="${ABOUT_INDENT}" y="${firstValueY + li * ABOUT_VALUE_H}"
-             font-size="12.5" fill="${T.valueText}">${esc(line)}</text>`).join('');
+             font-family="${FONT_BODY}" font-size="12.5" fill="${T.valueText}">${esc(line)}</text>`).join('');
 
     if (item.link) {
       linesHtml = `<a href="${item.link}" target="_blank">${linesHtml}</a>`;
@@ -446,7 +445,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
     const chunk = `
   <g transform="translate(${PAD},${curY})" fill="${item.color}" color="${item.color}">${item.icon}</g>
-  <text x="${ABOUT_INDENT}" y="${labelY}" font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
+  <text x="${ABOUT_INDENT}" y="${labelY}" font-family="${FONT_LABEL}" font-weight="bold" font-size="9" letter-spacing="1" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
   ${linesHtml}`;
     curY += ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
     return chunk;
@@ -454,7 +453,6 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
   const updatedAt = new Date().toISOString().slice(0, 10);
 
-  // Inline gradient stops from theme
   const accStops = T.accentStops
     .map((c, i) => `<stop offset="${['0%','50%','100%'][i]}" stop-color="${c}"/>`)
     .join('');
@@ -464,6 +462,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
+    ${FONT_EMBED}
     <clipPath id="card"><rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}"/></clipPath>
     <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">${accStops}</linearGradient>
     <linearGradient id="bdr" x1="0" y1="0" x2="1" y2="1">${bdrStops}</linearGradient>
@@ -480,12 +479,12 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
   <rect y="0" width="${W}" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
-  <g clip-path="url(#card)" font-family="Inter, Roboto, 'Helvetica Neue', Arial, sans-serif">
+  <g clip-path="url(#card)" font-family="${FONT_BODY}">
 
     ${chipsHtml}
 
     <text x="${PAD}" y="${LANG_TOP}"
-          font-family="Arial, sans-serif" font-weight="bold" font-size="10" letter-spacing="1.5" fill="${T.langLabel}">LANGUAGES</text>
+          font-family="${FONT_LABEL}" font-weight="bold" font-size="9" letter-spacing="1.5" fill="${T.langLabel}">LANGUAGES</text>
     <g clip-path="url(#bar)">${segments}</g>
     ${legend}
 
@@ -494,7 +493,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
     ${aboutHtml}
 
-    <text x="${W - PAD}" y="${H - 6}" font-size="9" fill="${T.timestamp}"
+    <text x="${W - PAD}" y="${H - 6}" font-family="${FONT_LABEL}" font-size="9" fill="${T.timestamp}"
           text-anchor="end">updated ${updatedAt}</text>
 
   </g>
