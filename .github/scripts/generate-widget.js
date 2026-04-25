@@ -13,6 +13,7 @@ const CUSTOM = {
   ide:      process.env.WIDGET_IDE      || '',
   stack:    process.env.WIDGET_STACK    || '',
   learning: process.env.WIDGET_LEARNING || '',
+  other:    process.env.WIDGET_OTHER    || '',
   contact:  process.env.WIDGET_CONTACT  || '',
   location: process.env.WIDGET_LOCATION || '',
 };
@@ -50,7 +51,7 @@ const THEMES = {
       { color: '#0ea5e9', opacity: 0.70 },
     ],
     statColors:  ['#fbbf24', '#34d399', '#60a5fa', '#c084fc'],
-    aboutColors: ['#818cf8', '#34d399', '#f472b6', '#fbbf24', '#60a5fa'],
+    aboutColors: ['#818cf8', '#34d399', '#f472b6', '#fb923c', '#fbbf24', '#60a5fa'],
   },
 
   nord: {
@@ -73,7 +74,7 @@ const THEMES = {
       { color: '#81a1c1', opacity: 0.70 },
     ],
     statColors:  ['#ebcb8b', '#a3be8c', '#88c0d0', '#b48ead'],
-    aboutColors: ['#81a1c1', '#a3be8c', '#d08770', '#ebcb8b', '#b48ead'],
+    aboutColors: ['#81a1c1', '#a3be8c', '#d08770', '#8fbcbb', '#ebcb8b', '#b48ead'],
   },
 
   catppuccin: {
@@ -96,7 +97,7 @@ const THEMES = {
       { color: '#89dceb', opacity: 0.70 },
     ],
     statColors:  ['#f9e2af', '#a6e3a1', '#89b4fa', '#cba6f7'],
-    aboutColors: ['#cba6f7', '#a6e3a1', '#f38ba8', '#f9e2af', '#89dceb'],
+    aboutColors: ['#cba6f7', '#a6e3a1', '#f38ba8', '#fab387', '#f9e2af', '#89dceb'],
   },
 };
 
@@ -377,6 +378,7 @@ const ICON = {
   book:     `<path d="M1 2.5A2.5 2.5 0 013.5 0h9.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 000 2h.75a.75.75 0 010 1.5H3.5A2.5 2.5 0 011 11.5zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1z"/>`,
   mail:     `<path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/>`,
   location: `<path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/>`,
+  other:    `<path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h4.586a1.5 1.5 0 0 1 1.06.44l6.5 6.5a1.5 1.5 0 0 1 0 2.12l-4.586 4.585a1.5 1.5 0 0 1-2.12 0l-6.5-6.5A1.5 1.5 0 0 1 1 7.085zm3.5 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>`,
 };
 
 // ── SVG builder ────────────────────────────────────────────────────────────────
@@ -416,9 +418,10 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     { icon: ICON.terminal, color: T.aboutColors[0], label: 'IDE',      value: CUSTOM.ide      },
     { icon: ICON.layers,   color: T.aboutColors[1], label: 'Stack',    value: CUSTOM.stack    },
     { icon: ICON.book,     color: T.aboutColors[2], label: 'Learning', value: CUSTOM.learning },
+    { icon: ICON.other,   color: T.aboutColors[3], label: 'Other',    value: CUSTOM.other    },
     { separator: true },
-    { icon: ICON.mail,     color: T.aboutColors[3], label: 'Contact',  value: CUSTOM.contact  },
-    { icon: ICON.location, color: T.aboutColors[4], label: 'Location', value: CUSTOM.location, link: CUSTOM.location ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(CUSTOM.location)}` : '' },
+    { icon: ICON.mail,     color: T.aboutColors[4], label: 'Contact',  value: CUSTOM.contact  },
+    { icon: ICON.location, color: T.aboutColors[5], label: 'Location', value: CUSTOM.location, link: CUSTOM.location ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(CUSTOM.location)}` : '' },
   ].filter(item => item.separator || item.value);
 
   while (aboutItems.length && aboutItems[0].separator) aboutItems.shift();
