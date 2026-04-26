@@ -47,7 +47,7 @@ jobs:
           WIDGET_IDE:      'Neovim'
           WIDGET_STACK:    'Kotlin · Java · Rust · JavaScript, HTML, CSS · TypeScript · Python'
           WIDGET_LEARNING: 'WebAssembly · Odin · Kotlin · Rust (further)'
-          WIDGET_OTHER:    'IKT/ICT · Distributed Systems · Cybersecurity'
+          WIDGET_OTHER:    'IKT/ICT · Distributed Systems · Cybersecurity · Networking'
           WIDGET_CONTACT:  |-
             Email: zsombor@remgr.dev | zsombor@mailbox.org
             Discord: remgr
