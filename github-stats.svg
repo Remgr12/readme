@@ -37,7 +37,7 @@
   <text x="326" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="326" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">446</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">453</text>
   <rect x="434" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="434" y="34" width="3" height="44" rx="1.5"
@@ -46,7 +46,7 @@
   <text x="531" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">14-DAY COMMITS</text>
   <text x="531" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#88c0d0">110</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#88c0d0">117</text>
   <rect x="639" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="639" y="34" width="3" height="44" rx="1.5"
@@ -55,7 +55,7 @@
   <text x="736" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">56.0k</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">55.7k</text>
 
     <text x="24" y="116"
           font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="1.2" fill="#d8dee9">LANGUAGES</text>
@@ -101,7 +101,7 @@
   <g transform="translate(24,392)" fill="#8fbcbb" color="#8fbcbb"><path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h4.586a1.5 1.5 0 0 1 1.06.44l6.5 6.5a1.5 1.5 0 0 1 0 2.12l-4.586 4.585a1.5 1.5 0 0 1-2.12 0l-6.5-6.5A1.5 1.5 0 0 1 1 7.085zm3.5 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></g>
   <text x="48" y="408" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#8fbcbb">OTHER</text>
   <text x="48" y="425"
-             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">IKT/ICT · Distributed Systems</text>
+             font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">IKT/ICT · Distributed Systems · Cybersecurity</text>
   <line x1="24" y1="444" x2="832" y2="444" stroke="#434c5e" stroke-width="1"/>
   <g transform="translate(24,464)" fill="#ebcb8b" color="#ebcb8b"><path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/></g>
   <text x="48" y="480" font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.8" fill="#ebcb8b">CONTACT</text>
