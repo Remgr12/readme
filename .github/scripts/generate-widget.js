@@ -163,8 +163,8 @@ async function fetchContributorStats(nameWithOwner, attempt = 0) {
       Accept:        'application/vnd.github+json',
     },
   });
-  if (res.status === 202 && attempt < 3) {
-    await new Promise((r) => setTimeout(r, 4000 * (attempt + 1)));
+  if (res.status === 202 && attempt < 6) {
+    await new Promise((r) => setTimeout(r, 8000 * (attempt + 1)));
     return fetchContributorStats(nameWithOwner, attempt + 1);
   }
   if (res.status !== 200) return null;
@@ -314,21 +314,34 @@ async function fetchRecentContribs() {
 
 // ── Data: lines of code (additions across ALL owned repos) ───────────────────
 // Uses additions only (not +deletions) to avoid double-counting rewrites.
+// Batched to avoid flooding the stats endpoint, which returns 202 when stats
+// aren't cached — flooding causes most repos to never finish computing in time.
 async function fetchLinesOfCode(repos) {
-  let total = 0;
-  const results = await Promise.allSettled(
-    repos.map(async (repo) => {
-      const stats = await fetchContributorStats(repo.nameWithOwner);
-      if (!Array.isArray(stats)) return 0;
-      const mine = stats.find(
-        (s) => s.author?.login?.toLowerCase() === USERNAME.toLowerCase(),
-      );
-      return mine ? mine.weeks.reduce((s, w) => s + w.a, 0) : 0;
-    }),
-  );
-  for (const r of results) {
-    if (r.status === 'fulfilled') total += r.value;
+  const BATCH_SIZE = 15;
+  let total  = 0;
+  let missed = 0;
+
+  for (let i = 0; i < repos.length; i += BATCH_SIZE) {
+    const batch = repos.slice(i, i + BATCH_SIZE);
+    const results = await Promise.allSettled(
+      batch.map(async (repo) => {
+        const stats = await fetchContributorStats(repo.nameWithOwner);
+        if (!Array.isArray(stats)) return 0;
+        const mine = stats.find(
+          (s) => s.author?.login?.toLowerCase() === USERNAME.toLowerCase(),
+        );
+        return mine ? mine.weeks.reduce((s, w) => s + w.a, 0) : 0;
+      }),
+    );
+    for (const r of results) {
+      if (r.status === 'fulfilled') total += r.value;
+      else missed++;
+    }
+    if (i + BATCH_SIZE < repos.length) {
+      await new Promise((r) => setTimeout(r, 1000));
+    }
   }
+  if (missed > 0) console.warn(`[widget] LOC: ${missed} repo(s) failed entirely`);
   return total;
 }
 
