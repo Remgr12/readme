@@ -37,7 +37,7 @@
   <text x="326" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LIFETIME COMMITS</text>
   <text x="326" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">551</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#a3be8c">552</text>
   <rect x="434" y="16" width="193" height="80" rx="10" ry="10"
         fill="#3b4252" stroke="#4c566a" stroke-width="1"/>
   <rect x="434" y="34" width="3" height="44" rx="1.5"
@@ -55,32 +55,32 @@
   <text x="736" y="62" text-anchor="middle"
         font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="0.4" fill="#d8dee9">LINES OF CODE</text>
   <text x="736" y="84" text-anchor="middle"
-        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">1.2M</text>
+        font-family="'JetBrains Mono', 'Courier New', monospace" font-size="20" font-weight="bold" fill="#b48ead">1.3M</text>
 
     <text x="24" y="116"
           font-family="'Space Mono', 'Courier New', monospace" font-weight="bold" font-size="11" letter-spacing="1.2" fill="#d8dee9">LANGUAGES</text>
-    <g clip-path="url(#bar)"><rect x="24" y="126" width="331" height="12" fill="#dea584"/><rect x="355" y="126" width="249" height="12" fill="#A97BFF"/><rect x="604" y="126" width="142" height="12" fill="#b07219"/><rect x="746" y="126" width="46" height="12" fill="#41b883"/><rect x="792" y="126" width="40" height="12" fill="#000080"/></g>
+    <g clip-path="url(#bar)"><rect x="24" y="126" width="487" height="12" fill="#427819"/><rect x="511" y="126" width="173" height="12" fill="#dea584"/><rect x="684" y="126" width="84" height="12" fill="#A97BFF"/><rect x="768" y="126" width="48" height="12" fill="#b07219"/><rect x="816" y="126" width="16" height="12" fill="#41b883"/></g>
     
-  <circle cx="29" cy="157" r="4.5" fill="#dea584"/>
-  <text x="38" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Rust</text>
+  <circle cx="29" cy="157" r="4.5" fill="#427819"/>
+  <text x="38" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Makefile</text>
   <text x="420" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">40.9%</text>
-  <circle cx="441" cy="157" r="4.5" fill="#A97BFF"/>
-  <text x="450" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Kotlin</text>
+        text-anchor="end">60.3%</text>
+  <circle cx="441" cy="157" r="4.5" fill="#dea584"/>
+  <text x="450" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Rust</text>
   <text x="832" y="162" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">30.8%</text>
-  <circle cx="29" cy="179" r="4.5" fill="#b07219"/>
-  <text x="38" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Java</text>
+        text-anchor="end">21.4%</text>
+  <circle cx="29" cy="179" r="4.5" fill="#A97BFF"/>
+  <text x="38" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Kotlin</text>
   <text x="420" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">17.6%</text>
-  <circle cx="441" cy="179" r="4.5" fill="#41b883"/>
-  <text x="450" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Vue</text>
+        text-anchor="end">10.4%</text>
+  <circle cx="441" cy="179" r="4.5" fill="#b07219"/>
+  <text x="450" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Java</text>
   <text x="832" y="184" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">5.7%</text>
-  <circle cx="29" cy="201" r="4.5" fill="#000080"/>
-  <text x="38" y="206" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Lua</text>
+        text-anchor="end">5.9%</text>
+  <circle cx="29" cy="201" r="4.5" fill="#41b883"/>
+  <text x="38" y="206" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#eceff4">Vue</text>
   <text x="420" y="206" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12" fill="#d8dee9"
-        text-anchor="end">5.0%</text>
+        text-anchor="end">1.9%</text>
 
     <line x1="24" y1="230" x2="832" y2="230"
           stroke="#434c5e" stroke-width="1"/>
@@ -115,7 +115,7 @@
              font-family="'JetBrains Mono', 'Courier New', monospace" font-size="12.5" fill="#eceff4">Salzburg State</text></a>
 
     <text x="832" y="602" font-family="'Space Mono', 'Courier New', monospace" font-size="10" fill="#81a1c1"
-          text-anchor="end">updated 2026-06-09</text>
+          text-anchor="end">updated 2026-06-10</text>
 
   </g>
 
