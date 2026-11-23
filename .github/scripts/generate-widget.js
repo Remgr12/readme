@@ -22,9 +22,13 @@ const MAX_LANGS   = 5;
 const OUTPUT_FILE = process.env.OUTPUT_FILE ?? 'github-stats.svg';
 
 // ── Font (joshpuckett/allo variable font → SVG paths via fontkit) ──────────────
-const ALLO_URL       = 'https://raw.githubusercontent.com/joshpuckett/allo/main/fonts/variable/AlloVariable.ttf';
-const ALLO_CACHE     = process.env.WIDGET_FONT_PATH || path.join(os.tmpdir(), 'AlloVariable.ttf');
-const ALLO_VARIATION = { wght: 400, ROND: 100, opsz: 16 };
+const ALLO_URL   = 'https://raw.githubusercontent.com/joshpuckett/allo/main/fonts/variable/AlloVariable.ttf';
+const ALLO_CACHE = process.env.WIDGET_FONT_PATH || path.join(os.tmpdir(), 'AlloVariable.ttf');
+const ALLO_AXES  = {
+  body:  { wght: 500, ROND: 100, opsz: 16 },
+  label: { wght: 600, ROND: 100, opsz: 16 },
+  stat:  { wght: 650, ROND: 100, opsz: 16 },
+};
 
 // ── Themes ─────────────────────────────────────────────────────────────────────
 // Select via WIDGET_THEME env var: 'default' | 'nord' | 'catppuccin'
@@ -152,7 +156,11 @@ async function loadAlloFont(fontPath = ALLO_CACHE) {
     await downloadFile(ALLO_URL, fontPath);
   }
   const base = fontkit.openSync(fontPath);
-  return base.getVariation(ALLO_VARIATION);
+  return {
+    body:  base.getVariation(ALLO_AXES.body),
+    label: base.getVariation(ALLO_AXES.label),
+    stat:  base.getVariation(ALLO_AXES.stat),
+  };
 }
 
 // ── Text-to-SVG path helpers ──────────────────────────────────────────────────
@@ -507,6 +515,7 @@ const ICON = {
 
 // ── SVG builder ────────────────────────────────────────────────────────────────
 function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, languages, font, custom = CUSTOM, theme = activeTheme }) {
+  const F      = font.body ? font : { body: font, label: font, stat: font };
   const T      = theme;
   const W      = 856;
   const PAD    = 24;
@@ -539,8 +548,8 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
   <rect x="${x}" y="${CHIPS_Y + 18}" width="3" height="${CHIP_H - 36}" rx="1.5"
         fill="${T.accent}" opacity="0.85"/>
   <g transform="translate(${cx - 8},${CHIPS_Y + 11})" fill="${T.accent}">${s.icon}</g>
-  ${textToPath(font, s.label, { x: cx, y: CHIPS_Y + 46, fontSize: 10.5, anchor: 'middle', letterSpacing: 0.8, fill: T.labelText })}
-  ${textToPath(font, s.value, { x: cx, y: CHIPS_Y + 71, fontSize: 22, anchor: 'middle', fill: T.valueText })}`;
+  ${textToPath(F.label, s.label, { x: cx, y: CHIPS_Y + 46, fontSize: 10.5, anchor: 'middle', letterSpacing: 0.8, fill: T.labelText })}
+  ${textToPath(F.stat, s.value, { x: cx, y: CHIPS_Y + 71, fontSize: 22, anchor: 'middle', fill: T.valueText })}`;
   }).join('');
 
   // ── Language section ────────────────────────────────────────────────────────
@@ -575,8 +584,8 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
     const name = l.name.length > 20 ? `${l.name.slice(0, 19)}…` : l.name;
     return `
   <circle cx="${colX + 5}" cy="${y + 5}" r="4.5" fill="${langColor(l.name)}"/>
-  ${textToPath(font, name, { x: colX + 16, y: y + 9, fontSize: 13, fill: T.valueText })}
-  ${textToPath(font, pct, { x: colX + BENTO_COL_W, y: y + 9, fontSize: 12.5, anchor: 'end', fill: T.mutedText })}`;
+  ${textToPath(F.body, name, { x: colX + 16, y: y + 9, fontSize: 13, fill: T.valueText })}
+  ${textToPath(F.body, pct, { x: colX + BENTO_COL_W, y: y + 9, fontSize: 12.5, anchor: 'end', fill: T.mutedText })}`;
   }).join('');
 
   // ── 2-Column Bento-Box Grid ─────────────────────────────────────────────────
@@ -594,11 +603,11 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
     if (def.type === 'pills') {
       const items = parsePills(def.value);
       if (!items.length) return null;
-      const layout = layoutPills(font, items, CARD_INNER_W);
+      const layout = layoutPills(F.body, items, CARD_INNER_W);
       const minH   = CARD_PAD_TOP + HEADER_H + CONTENT_GAP + layout.height + CARD_PAD_BOT;
       return { ...def, layout, height: minH };
     }
-    const lines = wrapText(font, def.value, CARD_INNER_W, TEXT_SIZE);
+    const lines = wrapText(F.body, def.value, CARD_INNER_W, TEXT_SIZE);
     if (!lines.length) return null;
     const minH = CARD_PAD_TOP + HEADER_H + CONTENT_GAP + lines.length * TEXT_LINE_H + CARD_PAD_BOT - 2;
     return { ...def, lines, height: minH };
@@ -661,11 +670,11 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
           return `
   <rect x="${px}" y="${py}" width="${p.w}" height="${p.h}" rx="12" ry="12"
         fill="${T.pillBg}" stroke="${T.pillBorder}" stroke-width="1"/>
-  ${textToPath(font, p.label, { x: tx, y: py + 16.2, fontSize: p.fontSize, anchor: 'middle', fill: T.valueText })}`;
+  ${textToPath(F.body, p.label, { x: tx, y: py + 16.2, fontSize: p.fontSize, anchor: 'middle', fill: T.valueText })}`;
         }).join('');
       } else {
         let linesHtml = card.lines.map((line, li) =>
-          textToPath(font, line, { x: contentX, y: contentY + 13 + li * TEXT_LINE_H, fontSize: TEXT_SIZE, fill: T.valueText }),
+          textToPath(F.body, line, { x: contentX, y: contentY + 13 + li * TEXT_LINE_H, fontSize: TEXT_SIZE, fill: T.valueText }),
         ).join('\n  ');
         if (card.link) {
           linesHtml = `<a href="${card.link}" target="_blank">${linesHtml}</a>`;
@@ -677,7 +686,7 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
   <rect x="${colX}" y="${y}" width="${BENTO_COL_W}" height="${card.height}" rx="10" ry="10"
         fill="${T.chipBg}" stroke="${T.chipBorder}" stroke-width="1"/>
   <g transform="translate(${contentX},${y + CARD_PAD_TOP}) scale(0.9)" fill="${T.accent}" color="${T.accent}">${card.icon}</g>
-  ${textToPath(font, card.label.toUpperCase(), { x: contentX + 22, y: y + CARD_PAD_TOP + 12, fontSize: 11, letterSpacing: 0.9, fill: T.labelText })}${bodyHtml}`;
+  ${textToPath(F.label, card.label.toUpperCase(), { x: contentX + 22, y: y + CARD_PAD_TOP + 12, fontSize: 11, letterSpacing: 0.9, fill: T.labelText })}${bodyHtml}`;
     }).join('');
   }
 
@@ -716,14 +725,14 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
 
     ${chipsHtml}
 
-    ${textToPath(font, 'LANGUAGES', { x: PAD, y: LANG_TOP, fontSize: 11, letterSpacing: 1.2, fill: T.labelText })}
+    ${textToPath(F.label, 'LANGUAGES', { x: PAD, y: LANG_TOP, fontSize: 11, letterSpacing: 1.2, fill: T.labelText })}
     <g clip-path="url(#bar)">${segments}</g>
     ${legend}
 
     ${leftHtml}
     ${rightHtml}
 
-    ${textToPath(font, `updated ${updatedAt}`, { x: W - PAD, y: H - 10, fontSize: 10, anchor: 'end', fill: T.timestamp })}
+    ${textToPath(F.body, `updated ${updatedAt}`, { x: W - PAD, y: H - 10, fontSize: 10, anchor: 'end', fill: T.timestamp })}
 
   </g>
 
