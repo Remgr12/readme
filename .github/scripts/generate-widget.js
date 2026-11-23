@@ -25,9 +25,9 @@ const OUTPUT_FILE = process.env.OUTPUT_FILE ?? 'github-stats.svg';
 const ALLO_URL   = 'https://raw.githubusercontent.com/joshpuckett/allo/main/fonts/variable/AlloVariable.ttf';
 const ALLO_CACHE = process.env.WIDGET_FONT_PATH || path.join(os.tmpdir(), 'AlloVariable.ttf');
 const ALLO_AXES  = {
-  body:  { wght: 500, ROND: 100, opsz: 16 },
-  label: { wght: 600, ROND: 100, opsz: 16 },
-  stat:  { wght: 650, ROND: 100, opsz: 16 },
+  body:  { wght: 550, ROND: 100, opsz: 16 },
+  label: { wght: 650, ROND: 100, opsz: 16 },
+  stat:  { wght: 720, ROND: 100, opsz: 16 },
 };
 
 // ── Themes ─────────────────────────────────────────────────────────────────────
@@ -43,14 +43,14 @@ const THEMES = {
     valueText:   '#ECEFF4',
     mutedText:   '#94A3B8',
     timestamp:   '#64748B',
-    accent:      '#dea584',
+    accent:      '#38bdf8',
     dotColor:    '#ffffff',
     dotOpacity:  0.05,
-    accentStops: ['#dea584', '#d08770', '#c27a66'],
+    accentStops: ['#22d3ee', '#38bdf8', '#0ea5e9'],
     borderStops: [
-      { color: '#dea584', opacity: 0.45 },
+      { color: '#38bdf8', opacity: 0.45 },
       { color: '#334155', opacity: 0.35 },
-      { color: '#dea584', opacity: 0.45 },
+      { color: '#22d3ee', opacity: 0.45 },
     ],
   },
 
@@ -64,12 +64,12 @@ const THEMES = {
     valueText:   '#ECEFF4',
     mutedText:   '#94A3B8',
     timestamp:   '#7F849C',
-    accent:      '#dea584',
+    accent:      '#88c0d0',
     dotColor:    '#eceff4',
     dotOpacity:  0.04,
-    accentStops: ['#dea584', '#d08770', '#ebcb8b'],
+    accentStops: ['#8fbcbb', '#88c0d0', '#81a1c1'],
     borderStops: [
-      { color: '#dea584', opacity: 0.55 },
+      { color: '#88c0d0', opacity: 0.55 },
       { color: '#4c566a', opacity: 0.40 },
       { color: '#81a1c1', opacity: 0.50 },
     ],
@@ -85,14 +85,14 @@ const THEMES = {
     valueText:   '#CDD6F4',
     mutedText:   '#7F849C',
     timestamp:   '#6c7086',
-    accent:      '#dea584',
+    accent:      '#89dceb',
     dotColor:    '#cdd6f4',
     dotOpacity:  0.04,
-    accentStops: ['#dea584', '#fab387', '#f9e2af'],
+    accentStops: ['#94e2d5', '#89dceb', '#74c7ec'],
     borderStops: [
-      { color: '#dea584', opacity: 0.55 },
+      { color: '#89dceb', opacity: 0.55 },
       { color: '#45475a', opacity: 0.35 },
-      { color: '#fab387', opacity: 0.55 },
+      { color: '#94e2d5', opacity: 0.55 },
     ],
   },
 };
@@ -545,8 +545,6 @@ function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, l
     return `
   <rect x="${x}" y="${CHIPS_Y}" width="${CHIP_W}" height="${CHIP_H}" rx="10" ry="10"
         fill="${T.chipBg}" stroke="${T.chipBorder}" stroke-width="1"/>
-  <rect x="${x}" y="${CHIPS_Y + 18}" width="3" height="${CHIP_H - 36}" rx="1.5"
-        fill="${T.accent}" opacity="0.85"/>
   <g transform="translate(${cx - 8},${CHIPS_Y + 11})" fill="${T.accent}">${s.icon}</g>
   ${textToPath(F.label, s.label, { x: cx, y: CHIPS_Y + 46, fontSize: 10.5, anchor: 'middle', letterSpacing: 0.8, fill: T.labelText })}
   ${textToPath(F.stat, s.value, { x: cx, y: CHIPS_Y + 71, fontSize: 22, anchor: 'middle', fill: T.valueText })}`;
