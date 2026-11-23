@@ -1,0 +1,7 @@
+{
+  "name": "github-stats-widget",
+  "private": true,
+  "dependencies": {
+    "fontkit": "^3.0.0"
+  }
+}

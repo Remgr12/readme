@@ -1,16 +1,16 @@
 'use strict';
 
-const https = require('https');
-const fs    = require('fs');
+const https   = require('https');
+const fs      = require('fs');
+const os      = require('os');
+const path    = require('path');
+const fontkit = require('fontkit');
 
 // ── Config ─────────────────────────────────────────────────────────────────────
 const TOKEN    = process.env.GITHUB_TOKEN;
 const USERNAME = process.env.GITHUB_USERNAME;
-if (!TOKEN)    { console.error('GITHUB_TOKEN is required');    process.exit(1); }
-if (!USERNAME) { console.error('GITHUB_USERNAME is required'); process.exit(1); }
 
 const CUSTOM = {
-  ide:      process.env.WIDGET_IDE      || '',
   stack:    process.env.WIDGET_STACK    || '',
   learning: process.env.WIDGET_LEARNING || '',
   other:    process.env.WIDGET_OTHER    || '',
@@ -21,12 +21,10 @@ const CUSTOM = {
 const MAX_LANGS   = 5;
 const OUTPUT_FILE = process.env.OUTPUT_FILE ?? 'github-stats.svg';
 
-// ── Fonts ──────────────────────────────────────────────────────────────────────
-// JetBrains Mono  → stat values, body text, timestamps
-// Space Mono      → uppercase labels (TOTAL STARS, LANGUAGES, IDE, etc.)
-const FONT_LABEL = `'Space Mono', 'Courier New', monospace`;
-const FONT_BODY  = `'JetBrains Mono', 'Courier New', monospace`;
-const FONT_EMBED = `<style>@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&amp;family=Space+Mono:wght@400;700&amp;display=swap');</style>`;
+// ── Font (joshpuckett/allo variable font → SVG paths via fontkit) ──────────────
+const ALLO_URL       = 'https://raw.githubusercontent.com/joshpuckett/allo/main/fonts/variable/AlloVariable.ttf';
+const ALLO_CACHE     = process.env.WIDGET_FONT_PATH || path.join(os.tmpdir(), 'AlloVariable.ttf');
+const ALLO_VARIATION = { wght: 400, ROND: 100, opsz: 16 };
 
 // ── Themes ─────────────────────────────────────────────────────────────────────
 // Select via WIDGET_THEME env var: 'default' | 'nord' | 'catppuccin'
@@ -35,69 +33,63 @@ const THEMES = {
     card:        '#0d1117',
     chipBg:      '#111827',
     chipBorder:  '#1f2937',
-    divider:     '#1e293b',
-    langLabel:   '#374151',
-    legendText:  '#cbd5e1',
-    legendPct:   '#4b5563',
-    chipLabel:   '#4b5563',
-    valueText:   '#94a3b8',
-    timestamp:   '#1f2937',
+    pillBg:      '#1e293b',
+    pillBorder:  '#334155',
+    labelText:   '#94A3B8',
+    valueText:   '#ECEFF4',
+    mutedText:   '#94A3B8',
+    timestamp:   '#64748B',
+    accent:      '#dea584',
     dotColor:    '#ffffff',
-    dotOpacity:  0.07,
-    accentStops: ['#7c3aed', '#2563eb', '#0ea5e9'],
+    dotOpacity:  0.05,
+    accentStops: ['#dea584', '#d08770', '#c27a66'],
     borderStops: [
-      { color: '#7c3aed', opacity: 0.70 },
-      { color: '#2563eb', opacity: 0.25 },
-      { color: '#0ea5e9', opacity: 0.70 },
+      { color: '#dea584', opacity: 0.45 },
+      { color: '#334155', opacity: 0.35 },
+      { color: '#dea584', opacity: 0.45 },
     ],
-    statColors:  ['#fbbf24', '#34d399', '#60a5fa', '#c084fc'],
-    aboutColors: ['#818cf8', '#34d399', '#f472b6', '#fb923c', '#fbbf24', '#60a5fa'],
   },
 
   nord: {
     card:        '#2e3440',
     chipBg:      '#3b4252',
     chipBorder:  '#4c566a',
-    divider:     '#434c5e',
-    langLabel:   '#d8dee9',
-    legendText:  '#eceff4',
-    legendPct:   '#d8dee9',
-    chipLabel:   '#d8dee9',
-    valueText:   '#eceff4',
-    timestamp:   '#81a1c1',
+    pillBg:      '#434c5e',
+    pillBorder:  '#546077',
+    labelText:   '#94A3B8',
+    valueText:   '#ECEFF4',
+    mutedText:   '#94A3B8',
+    timestamp:   '#7F849C',
+    accent:      '#dea584',
     dotColor:    '#eceff4',
-    dotOpacity:  0.05,
-    accentStops: ['#8fbcbb', '#81a1c1', '#5e81ac'],
+    dotOpacity:  0.04,
+    accentStops: ['#dea584', '#d08770', '#ebcb8b'],
     borderStops: [
-      { color: '#88c0d0', opacity: 0.70 },
-      { color: '#5e81ac', opacity: 0.25 },
-      { color: '#81a1c1', opacity: 0.70 },
+      { color: '#dea584', opacity: 0.55 },
+      { color: '#4c566a', opacity: 0.40 },
+      { color: '#81a1c1', opacity: 0.50 },
     ],
-    statColors:  ['#ebcb8b', '#a3be8c', '#88c0d0', '#b48ead'],
-    aboutColors: ['#81a1c1', '#a3be8c', '#d08770', '#8fbcbb', '#ebcb8b', '#b48ead'],
   },
 
   catppuccin: {
     card:        '#1e1e2e',
     chipBg:      '#313244',
     chipBorder:  '#45475a',
-    divider:     '#313244',
-    langLabel:   '#585b70',
-    legendText:  '#cdd6f4',
-    legendPct:   '#6c7086',
-    chipLabel:   '#6c7086',
-    valueText:   '#a6adc8',
-    timestamp:   '#45475a',
+    pillBg:      '#3b3d52',
+    pillBorder:  '#585b70',
+    labelText:   '#7F849C',
+    valueText:   '#CDD6F4',
+    mutedText:   '#7F849C',
+    timestamp:   '#6c7086',
+    accent:      '#dea584',
     dotColor:    '#cdd6f4',
     dotOpacity:  0.04,
-    accentStops: ['#cba6f7', '#89b4fa', '#89dceb'],
+    accentStops: ['#dea584', '#fab387', '#f9e2af'],
     borderStops: [
-      { color: '#cba6f7', opacity: 0.70 },
-      { color: '#89b4fa', opacity: 0.25 },
-      { color: '#89dceb', opacity: 0.70 },
+      { color: '#dea584', opacity: 0.55 },
+      { color: '#45475a', opacity: 0.35 },
+      { color: '#fab387', opacity: 0.55 },
     ],
-    statColors:  ['#f9e2af', '#a6e3a1', '#89b4fa', '#cba6f7'],
-    aboutColors: ['#cba6f7', '#a6e3a1', '#f38ba8', '#fab387', '#f9e2af', '#89dceb'],
   },
 };
 
@@ -130,6 +122,91 @@ function rawRequest(options, body) {
     if (body) req.write(body);
     req.end();
   });
+}
+
+function downloadFile(url, dest, redirects = 0) {
+  return new Promise((resolve, reject) => {
+    if (redirects > 5) return reject(new Error('Too many redirects downloading font'));
+    https.get(url, { headers: { 'User-Agent': 'github-stats-widget/1.0' } }, (res) => {
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        res.resume();
+        return resolve(downloadFile(res.headers.location, dest, redirects + 1));
+      }
+      if (res.statusCode !== 200) {
+        res.resume();
+        return reject(new Error(`Font download HTTP ${res.statusCode}: ${url}`));
+      }
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        fs.writeFileSync(dest, Buffer.concat(chunks));
+        resolve(dest);
+      });
+    }).on('error', reject);
+  });
+}
+
+async function loadAlloFont(fontPath = ALLO_CACHE) {
+  if (!fs.existsSync(fontPath)) {
+    console.log(`[widget] downloading AlloVariable.ttf → ${fontPath}`);
+    await downloadFile(ALLO_URL, fontPath);
+  }
+  const base = fontkit.openSync(fontPath);
+  return base.getVariation(ALLO_VARIATION);
+}
+
+// ── Text-to-SVG path helpers ──────────────────────────────────────────────────
+const r2 = (n) => Math.round(n * 100) / 100;
+
+function measureText(font, text, fontSize, letterSpacing = 0) {
+  const run   = font.layout(String(text));
+  const scale = fontSize / font.unitsPerEm;
+  const extra = Math.max(0, run.glyphs.length - 1) * letterSpacing;
+  return run.advanceWidth * scale + extra;
+}
+
+function textToPath(font, text, { x, y, fontSize, anchor = 'start', letterSpacing = 0, fill }) {
+  const str    = String(text);
+  const run    = font.layout(str);
+  const scale  = fontSize / font.unitsPerEm;
+  const totalW = run.advanceWidth * scale + Math.max(0, run.glyphs.length - 1) * letterSpacing;
+
+  let cursorX = x;
+  if (anchor === 'middle') cursorX -= totalW / 2;
+  else if (anchor === 'end') cursorX -= totalW;
+
+  const parts = [];
+  for (let i = 0; i < run.glyphs.length; i++) {
+    const glyph = run.glyphs[i];
+    const pos   = run.positions[i];
+    const gx    = cursorX + pos.xOffset * scale;
+    const gy    = y - pos.yOffset * scale;
+
+    for (const cmd of glyph.path.commands) {
+      const a = cmd.args;
+      switch (cmd.command) {
+        case 'moveTo':
+          parts.push(`M${r2(gx + a[0] * scale)} ${r2(gy - a[1] * scale)}`);
+          break;
+        case 'lineTo':
+          parts.push(`L${r2(gx + a[0] * scale)} ${r2(gy - a[1] * scale)}`);
+          break;
+        case 'quadraticCurveTo':
+          parts.push(`Q${r2(gx + a[0] * scale)} ${r2(gy - a[1] * scale)} ${r2(gx + a[2] * scale)} ${r2(gy - a[3] * scale)}`);
+          break;
+        case 'bezierCurveTo':
+          parts.push(`C${r2(gx + a[0] * scale)} ${r2(gy - a[1] * scale)} ${r2(gx + a[2] * scale)} ${r2(gy - a[3] * scale)} ${r2(gx + a[4] * scale)} ${r2(gy - a[5] * scale)}`);
+          break;
+        case 'closePath':
+          parts.push('Z');
+          break;
+      }
+    }
+    cursorX += pos.xAdvance * scale + letterSpacing;
+  }
+
+  if (!parts.length) return '';
+  return `<path d="${parts.join('')}" fill="${fill}"/>`;
 }
 
 async function gqlRequest(query, variables = {}) {
@@ -177,6 +254,9 @@ async function fetchPersonalRepos(after = null, acc = []) {
     query($login: String!, $after: String) {
       user(login: $login) {
         createdAt
+        publicRepos: repositories(privacy: PUBLIC, ownerAffiliations: OWNER) {
+          totalCount
+        }
         repositories(
           first: 100
           ownerAffiliations: OWNER
@@ -185,7 +265,6 @@ async function fetchPersonalRepos(after = null, acc = []) {
         ) {
           nodes {
             nameWithOwner
-            stargazerCount
             isFork
             languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
               edges { size node { name } }
@@ -203,7 +282,11 @@ async function fetchPersonalRepos(after = null, acc = []) {
   if (user.repositories.pageInfo.hasNextPage) {
     return fetchPersonalRepos(user.repositories.pageInfo.endCursor, acc);
   }
-  return { createdAt: user.createdAt, repos: acc };
+  return {
+    createdAt:   user.createdAt,
+    publicRepos: user.publicRepos.totalCount,
+    repos:       acc,
+  };
 }
 
 // ── Data: repos from a single org (paginated) ────────────────────────────────
@@ -218,7 +301,6 @@ async function fetchOrgRepos(orgLogin, after = null, acc = []) {
         ) {
           nodes {
             nameWithOwner
-            stargazerCount
             isFork
             languages(first: 10, orderBy: { field: SIZE, direction: DESC }) {
               edges { size node { name } }
@@ -254,12 +336,12 @@ async function fetchUserOrgs() {
 
 // ── Data: all repos — personal + all orgs ────────────────────────────────────
 async function fetchAllRepos() {
-  const [{ createdAt, repos: personalRepos }, orgs] = await Promise.all([
+  const [{ createdAt, publicRepos, repos: personalRepos }, orgs] = await Promise.all([
     fetchPersonalRepos(),
     fetchUserOrgs(),
   ]);
 
-  console.log(`[widget] ${personalRepos.length} personal repos, ${orgs.length} org(s): ${orgs.join(', ') || 'none'}`);
+  console.log(`[widget] ${personalRepos.length} personal repos (${publicRepos} public), ${orgs.length} org(s): ${orgs.join(', ') || 'none'}`);
 
   const orgRepoLists = await Promise.allSettled(orgs.map((org) => fetchOrgRepos(org)));
   const orgRepos = orgRepoLists
@@ -274,7 +356,7 @@ async function fetchAllRepos() {
     return true;
   });
 
-  return { createdAt, repos: allRepos };
+  return { createdAt, publicRepos, repos: allRepos };
 }
 
 // ── Data: contributions within a date window ──────────────────────────────────
@@ -304,12 +386,6 @@ async function fetchLifetimeContribs(createdAt) {
     total += await fetchContributions(from, to);
   }
   return total;
-}
-
-async function fetchRecentContribs() {
-  const to   = new Date();
-  const from = new Date(to.getTime() - 14 * 24 * 60 * 60 * 1000);
-  return fetchContributions(from.toISOString(), to.toISOString());
 }
 
 // ── Data: lines of code (additions across ALL owned repos) ───────────────────
@@ -352,117 +428,106 @@ function fmt(n) {
   return String(n);
 }
 
-const esc = (s) =>
-  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function formatYears(createdAt, now = Date.now()) {
+  const msPerYear = 365.25 * 24 * 60 * 60 * 1000;
+  const years = Math.max(0, (now - new Date(createdAt).getTime()) / msPerYear);
+  return years >= 10 ? String(Math.floor(years)) : years.toFixed(1);
+}
 
-// ── About text wrapping ────────────────────────────────────────────────────────
-// JetBrains Mono is slightly wider than Arial — use 7.2px per char at 12px
-function wrapAbout(text, availWidth) {
-  if (text.includes('\n')) return text.split('\n');
+// ── Pill & text layout helpers (exact font metrics) ───────────────────────────
+function parsePills(raw) {
+  return String(raw || '')
+    .split(/\s*[·,\n]\s*/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
-  const MAX_CHARS = Math.floor(availWidth / 7.2);
-  if (text.length <= MAX_CHARS) return [text];
+function layoutPills(font, items, maxWidth) {
+  const PILL_H     = 24;
+  const PILL_PAD_X = 11;
+  const GAP_X      = 7;
+  const GAP_Y      = 7;
+  const FONT_SIZE  = 12;
 
-  function pack(tokens, sep) {
-    const lines = [];
-    let line = '';
-    for (const tok of tokens) {
-      const candidate = line ? `${line}${sep}${tok}` : tok;
-      if (candidate.length <= MAX_CHARS) { line = candidate; }
-      else { if (line) lines.push(line); line = tok; }
+  const placed = [];
+  let cx = 0;
+  let cy = 0;
+
+  for (const label of items) {
+    const textW = measureText(font, label, FONT_SIZE);
+    const w = Math.min(maxWidth, Math.ceil(textW) + PILL_PAD_X * 2);
+    if (cx > 0 && cx + w > maxWidth) {
+      cx = 0;
+      cy += PILL_H + GAP_Y;
     }
-    if (line) lines.push(line);
-    return lines;
+    placed.push({ label, x: cx, y: cy, w, h: PILL_H, fontSize: FONT_SIZE });
+    cx += w + GAP_X;
   }
 
-  const dotTokens = text.split(/\s+·\s+/);
-  if (dotTokens.length > 1) return pack(dotTokens, ' · ');
-  return pack(text.split(' '), ' ');
+  const height = placed.length ? cy + PILL_H : 0;
+  return { placed, height };
+}
+
+function wrapText(font, text, availWidth, fontSize) {
+  const rawLines = String(text || '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean);
+
+  const out = [];
+  for (const line of rawLines) {
+    if (measureText(font, line, fontSize) <= availWidth) {
+      out.push(line);
+      continue;
+    }
+    const tokens = line.split(/\s+/);
+    let cur = '';
+    for (const tok of tokens) {
+      const cand = cur ? `${cur} ${tok}` : tok;
+      if (measureText(font, cand, fontSize) <= availWidth) { cur = cand; }
+      else { if (cur) out.push(cur); cur = tok; }
+    }
+    if (cur) out.push(cur);
+  }
+  return out;
 }
 
 // ── Icons (16 × 16 octicon paths) ─────────────────────────────────────────────
 const ICON = {
-  star:     `<path d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"/>`,
+  repo:     `<path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>`,
   commit:   `<path d="M11.93 8.5a4.002 4.002 0 01-7.86 0H.75a.75.75 0 010-1.5H4.07a4.002 4.002 0 017.86 0h3.32a.75.75 0 010 1.5zm-1.43-.75a2.5 2.5 0 10-5 0 2.5 2.5 0 005 0z"/>`,
-  clock:    `<path d="M8 0a8 8 0 110 16A8 8 0 018 0zm0 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zm.75 3.25a.75.75 0 00-1.5 0v3.63L5.22 10.4a.75.75 0 001.06 1.06l2.22-2.22a.75.75 0 00.22-.53V4.75z"/>`,
+  calendar: `<path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 13.25 16H2.75A1.75 1.75 0 0 1 1 14.25V3.75C1 2.784 1.784 2 2.75 2H4V.75A.75.75 0 0 1 4.75 0ZM2.5 7.5v6.75c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25V7.5Zm10.75-4H2.75a.25.25 0 0 0-.25.25V6h11V3.75a.25.25 0 0 0-.25-.25Z"/>`,
   code:     `<path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06l4.25-4.25zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06l-4.25-4.25z"/>`,
-  terminal: `<rect x="1" y="1" width="14" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M4.5 5.5l3.5 3-3.5 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><line x1="9.5" y1="11.5" x2="13" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>`,
   layers:   `<rect x="1.5" y="1.5"  width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.4"/><rect x="1.5" y="6.25" width="13" height="3.5" rx="1.75" fill="currentColor" opacity="0.7"/><rect x="1.5" y="11"   width="13" height="3.5" rx="1.75" fill="currentColor"/>`,
   book:     `<path d="M1 2.5A2.5 2.5 0 013.5 0h9.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 000 2h.75a.75.75 0 010 1.5H3.5A2.5 2.5 0 011 11.5zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1z"/>`,
+  other:    `<path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h4.586a1.5 1.5 0 0 1 1.06.44l6.5 6.5a1.5 1.5 0 0 1 0 2.12l-4.586 4.585a1.5 1.5 0 0 1-2.12 0l-6.5-6.5A1.5 1.5 0 0 1 1 7.085zm3.5 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>`,
   mail:     `<path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2Zm12.5 1.5H1.75a.25.25 0 0 0-.25.25v.32l6.5 4.5 6.5-4.5v-.32a.25.25 0 0 0-.25-.25ZM1.5 5.809v6.442c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809l-6.5 4.5Z"/>`,
   location: `<path d="M8 0a6.5 6.5 0 0 1 6.5 6.5c0 4.673-4.996 9.68-6.136 10.74a.5.5 0 0 1-.728 0C6.496 16.18 1.5 11.173 1.5 6.5A6.5 6.5 0 0 1 8 0Zm0 1.5a5 5 0 0 0-5 5c0 3.398 3.55 7.42 5 8.89 1.45-1.47 5-5.492 5-8.89a5 5 0 0 0-5-5Zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/>`,
-  other:    `<path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h4.586a1.5 1.5 0 0 1 1.06.44l6.5 6.5a1.5 1.5 0 0 1 0 2.12l-4.586 4.585a1.5 1.5 0 0 1-2.12 0l-6.5-6.5A1.5 1.5 0 0 1 1 7.085zm3.5 2a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>`,
 };
 
 // ── SVG builder ────────────────────────────────────────────────────────────────
-function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, languages }) {
-  const T      = activeTheme;
+function buildSVG({ publicRepos, lifetimeContribs, yearsOnGithub, linesOfCode, languages, font, custom = CUSTOM, theme = activeTheme }) {
+  const T      = theme;
   const W      = 856;
   const PAD    = 24;
   const RADIUS = 14;
+  const GAP    = 12;
 
   const langs   = languages.slice(0, MAX_LANGS);
   const totalSz = langs.reduce((s, l) => s + l.size, 0) || 1;
 
-  // ── Stat chips — 4 across ─────────────────────────────────────────────────────
-  const CHIP_GAP   = 12;
-  const CHIP_W     = Math.floor((W - PAD * 2 - CHIP_GAP * 3) / 4);
-  const CHIP_H     = 80;
-  const CHIPS_Y    = 16;
-  const chipStartX = Math.round((W - (CHIP_W * 4 + CHIP_GAP * 3)) / 2);
-  const chipXs     = [0, 1, 2, 3].map((i) => chipStartX + i * (CHIP_W + CHIP_GAP));
+  // ── Stat chips — 4 across ───────────────────────────────────────────────────
+  const CHIP_W     = Math.floor((W - PAD * 2 - GAP * 3) / 4);
+  const CHIP_H     = 84;
+  const CHIPS_Y    = 20;
+  const chipStartX = Math.round((W - (CHIP_W * 4 + GAP * 3)) / 2);
+  const chipXs     = [0, 1, 2, 3].map((i) => chipStartX + i * (CHIP_W + GAP));
 
-  // ── Language section ──────────────────────────────────────────────────────────
-  const LANG_TOP    = CHIPS_Y + CHIP_H + 20;
-  const SEGBAR_Y    = LANG_TOP + 10;
-  const SEGBAR_H    = 12;
-  const LEGEND_Y    = SEGBAR_Y + SEGBAR_H + 14;
-  const LEGEND_ROW  = 22;
-  const LEGEND_ROWS = Math.ceil(langs.length / 2);
-
-  // ── About section ─────────────────────────────────────────────────────────────
-  const ABOUT_INDENT  = PAD + 24;
-  const ABOUT_VALUE_W = W - ABOUT_INDENT - PAD;
-  const ABOUT_LABEL_H = 16;
-  const ABOUT_VALUE_H = 18;
-  const ABOUT_GAP     = 14;
-
-  const aboutItems = [
-    { icon: ICON.terminal, color: T.aboutColors[0], label: 'IDE',      value: CUSTOM.ide      },
-    { icon: ICON.layers,   color: T.aboutColors[1], label: 'Stack',    value: CUSTOM.stack    },
-    { icon: ICON.book,     color: T.aboutColors[2], label: 'Learning', value: CUSTOM.learning },
-    { icon: ICON.other,   color: T.aboutColors[3], label: 'Other',    value: CUSTOM.other    },
-    { separator: true },
-    { icon: ICON.mail,     color: T.aboutColors[4], label: 'Contact',  value: CUSTOM.contact  },
-    { icon: ICON.location, color: T.aboutColors[5], label: 'Location', value: CUSTOM.location, link: CUSTOM.location ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(CUSTOM.location)}` : '' },
-  ].filter(item => item.separator || item.value);
-
-  while (aboutItems.length && aboutItems[0].separator) aboutItems.shift();
-  while (aboutItems.length && aboutItems[aboutItems.length - 1].separator) aboutItems.pop();
-
-  const aboutData = aboutItems.map((item) => {
-    if (item.separator) return item;
-    return { ...item, lines: wrapAbout(item.value, ABOUT_VALUE_W) };
-  });
-
-  const totalAboutH = aboutData.reduce((sum, item) => {
-    if (item.separator) return sum + 24;
-    return sum + ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
-  }, 0);
-
-  const DIV_Y   = LEGEND_Y + LEGEND_ROWS * LEGEND_ROW + 12;
-  const ABOUT_Y = DIV_Y + 18;
-  const H       = ABOUT_Y + totalAboutH + 12;
-
-  const BAR_X = PAD;
-  const BAR_W = W - PAD * 2;
-
-  // ── Stat chips ────────────────────────────────────────────────────────────────
   const statsData = [
-    { label: 'TOTAL STARS',      value: fmt(totalStars),       color: T.statColors[0], icon: ICON.star   },
-    { label: 'LIFETIME COMMITS', value: fmt(lifetimeContribs), color: T.statColors[1], icon: ICON.commit },
-    { label: '14-DAY COMMITS',   value: fmt(recentContribs),   color: T.statColors[2], icon: ICON.clock  },
-    { label: 'LINES OF CODE',    value: fmt(linesOfCode),      color: T.statColors[3], icon: ICON.code   },
+    { label: 'PUBLIC REPOS',     value: fmt(publicRepos),      icon: ICON.repo     },
+    { label: 'LIFETIME COMMITS', value: fmt(lifetimeContribs), icon: ICON.commit   },
+    { label: 'YEARS ON GITHUB',  value: String(yearsOnGithub), icon: ICON.calendar },
+    { label: 'LINES OF CODE',    value: fmt(linesOfCode),      icon: ICON.code     },
   ];
 
   const chipsHtml = statsData.map((s, i) => {
@@ -472,15 +537,22 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
   <rect x="${x}" y="${CHIPS_Y}" width="${CHIP_W}" height="${CHIP_H}" rx="10" ry="10"
         fill="${T.chipBg}" stroke="${T.chipBorder}" stroke-width="1"/>
   <rect x="${x}" y="${CHIPS_Y + 18}" width="3" height="${CHIP_H - 36}" rx="1.5"
-        fill="${s.color}" opacity="0.85"/>
-  <g transform="translate(${cx - 8},${CHIPS_Y + 10})" fill="${s.color}">${s.icon}</g>
-  <text x="${cx}" y="${CHIPS_Y + 46}" text-anchor="middle"
-        font-family="${FONT_LABEL}" font-weight="bold" font-size="11" letter-spacing="0.4" fill="${T.chipLabel}">${esc(s.label)}</text>
-  <text x="${cx}" y="${CHIPS_Y + 68}" text-anchor="middle"
-        font-family="${FONT_BODY}" font-size="20" font-weight="bold" fill="${s.color}">${esc(s.value)}</text>`;
+        fill="${T.accent}" opacity="0.85"/>
+  <g transform="translate(${cx - 8},${CHIPS_Y + 11})" fill="${T.accent}">${s.icon}</g>
+  ${textToPath(font, s.label, { x: cx, y: CHIPS_Y + 46, fontSize: 10.5, anchor: 'middle', letterSpacing: 0.8, fill: T.labelText })}
+  ${textToPath(font, s.value, { x: cx, y: CHIPS_Y + 71, fontSize: 22, anchor: 'middle', fill: T.valueText })}`;
   }).join('');
 
-  // ── Language segmented bar ────────────────────────────────────────────────────
+  // ── Language section ────────────────────────────────────────────────────────
+  const BAR_X       = PAD;
+  const BAR_W       = W - PAD * 2;
+  const LANG_TOP    = CHIPS_Y + CHIP_H + 26;
+  const SEGBAR_Y    = LANG_TOP + 10;
+  const SEGBAR_H    = 10;
+  const LEGEND_Y    = SEGBAR_Y + SEGBAR_H + 16;
+  const LEGEND_ROW  = 22;
+  const LEGEND_ROWS = Math.ceil(langs.length / 2);
+
   let runX = BAR_X;
   const segments = langs.map((l, i) => {
     const isLast = i === langs.length - 1;
@@ -492,49 +564,127 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
     return seg;
   }).join('');
 
-  // ── Language legend (2-column) ────────────────────────────────────────────────
-  const colW   = Math.floor((W - PAD * 2 - 16) / 2);
+  // Align 2-column language legend with the 2-column Bento grid below
+  const BENTO_COL_W = Math.floor((W - PAD * 2 - GAP) / 2);
   const legend = langs.map((l, i) => {
     const col  = i % 2;
     const row  = Math.floor(i / 2);
-    const colX = PAD + col * (colW + 16);
+    const colX = PAD + col * (BENTO_COL_W + GAP);
     const y    = LEGEND_Y + row * LEGEND_ROW;
     const pct  = (l.size / totalSz * 100).toFixed(1) + '%';
-    const name = l.name.length > 18 ? `${l.name.slice(0, 17)}…` : l.name;
+    const name = l.name.length > 20 ? `${l.name.slice(0, 19)}…` : l.name;
     return `
   <circle cx="${colX + 5}" cy="${y + 5}" r="4.5" fill="${langColor(l.name)}"/>
-  <text x="${colX + 14}" y="${y + 10}" font-family="${FONT_BODY}" font-size="12" fill="${T.legendText}">${esc(name)}</text>
-  <text x="${colX + colW}" y="${y + 10}" font-family="${FONT_BODY}" font-size="12" fill="${T.legendPct}"
-        text-anchor="end">${esc(pct)}</text>`;
+  ${textToPath(font, name, { x: colX + 16, y: y + 9, fontSize: 13, fill: T.valueText })}
+  ${textToPath(font, pct, { x: colX + BENTO_COL_W, y: y + 9, fontSize: 12.5, anchor: 'end', fill: T.mutedText })}`;
   }).join('');
 
-  // ── About rows ────────────────────────────────────────────────────────────────
-  let curY = ABOUT_Y;
-  const aboutHtml = aboutData.map((item) => {
-    if (item.separator) {
-      const sepY = curY;
-      curY += 24;
-      return `\n  <line x1="${PAD}" y1="${sepY + 4}" x2="${W - PAD}" y2="${sepY + 4}" stroke="${T.divider}" stroke-width="1"/>`;
+  // ── 2-Column Bento-Box Grid ─────────────────────────────────────────────────
+  const BENTO_Y      = LEGEND_Y + LEGEND_ROWS * LEGEND_ROW + 14;
+  const CARD_PAD_X   = 16;
+  const CARD_PAD_TOP = 14;
+  const CARD_PAD_BOT = 16;
+  const HEADER_H     = 16;
+  const CONTENT_GAP  = 12;
+  const TEXT_SIZE    = 13.5;
+  const TEXT_LINE_H  = 20;
+  const CARD_INNER_W = BENTO_COL_W - CARD_PAD_X * 2;
+
+  function buildCardModel(def) {
+    if (def.type === 'pills') {
+      const items = parsePills(def.value);
+      if (!items.length) return null;
+      const layout = layoutPills(font, items, CARD_INNER_W);
+      const minH   = CARD_PAD_TOP + HEADER_H + CONTENT_GAP + layout.height + CARD_PAD_BOT;
+      return { ...def, layout, height: minH };
     }
+    const lines = wrapText(font, def.value, CARD_INNER_W, TEXT_SIZE);
+    if (!lines.length) return null;
+    const minH = CARD_PAD_TOP + HEADER_H + CONTENT_GAP + lines.length * TEXT_LINE_H + CARD_PAD_BOT - 2;
+    return { ...def, lines, height: minH };
+  }
 
-    const labelY      = curY + ABOUT_LABEL_H;
-    const firstValueY = labelY + ABOUT_VALUE_H - 1;
-    let linesHtml = item.lines.map((line, li) =>
-      `<text x="${ABOUT_INDENT}" y="${firstValueY + li * ABOUT_VALUE_H}"
-             font-family="${FONT_BODY}" font-size="12.5" fill="${T.valueText}">${esc(line)}</text>`).join('');
+  const leftCards = [
+    { type: 'pills', icon: ICON.layers, label: 'Stack',    value: custom.stack    },
+    { type: 'pills', icon: ICON.book,   label: 'Learning', value: custom.learning },
+  ].map(buildCardModel).filter(Boolean);
 
-    if (item.link) {
-      linesHtml = `<a href="${item.link}" target="_blank">${linesHtml}</a>`;
-    }
+  const rightCards = [
+    { type: 'pills', icon: ICON.other,    label: 'Other',    value: custom.other    },
+    { type: 'text',  icon: ICON.mail,     label: 'Contact',  value: custom.contact  },
+    {
+      type:  'text',
+      icon:  ICON.location,
+      label: 'Location',
+      value: custom.location,
+      link:  custom.location
+        ? `https://www.openstreetmap.org/search?query=${encodeURIComponent(custom.location)}`
+        : '',
+    },
+  ].map(buildCardModel).filter(Boolean);
 
-    const chunk = `
-  <g transform="translate(${PAD},${curY})" fill="${item.color}" color="${item.color}">${item.icon}</g>
-  <text x="${ABOUT_INDENT}" y="${labelY}" font-family="${FONT_LABEL}" font-weight="bold" font-size="11" letter-spacing="0.8" fill="${item.color}">${esc(item.label.toUpperCase())}</text>
-  ${linesHtml}`;
-    curY += ABOUT_LABEL_H + item.lines.length * ABOUT_VALUE_H + ABOUT_GAP;
-    return chunk;
-  }).join('');
+  const colHeight = (cards) =>
+    cards.reduce((sum, c) => sum + c.height, 0) + Math.max(0, cards.length - 1) * GAP;
 
+  const leftH  = colHeight(leftCards);
+  const rightH = colHeight(rightCards);
+  const gridH  = Math.max(leftH, rightH);
+
+  // Balance column heights so the bottom edge of the 2-column Bento grid is flush
+  function balanceColumn(cards, currentH, targetH) {
+    const diff = targetH - currentH;
+    if (diff <= 0 || !cards.length) return;
+    const extraEach = Math.floor(diff / cards.length);
+    const remainder = diff - extraEach * cards.length;
+    cards.forEach((c, idx) => {
+      c.height += extraEach + (idx === cards.length - 1 ? remainder : 0);
+    });
+  }
+  balanceColumn(leftCards, leftH, gridH);
+  balanceColumn(rightCards, rightH, gridH);
+
+  function renderColumn(cards, colX) {
+    let curY = BENTO_Y;
+    return cards.map((card) => {
+      const y = curY;
+      curY += card.height + GAP;
+
+      const contentX = colX + CARD_PAD_X;
+      const contentY = y + CARD_PAD_TOP + HEADER_H + CONTENT_GAP;
+
+      let bodyHtml = '';
+      if (card.type === 'pills') {
+        bodyHtml = card.layout.placed.map((p) => {
+          const px = contentX + p.x;
+          const py = contentY + p.y;
+          const tx = px + p.w / 2;
+          return `
+  <rect x="${px}" y="${py}" width="${p.w}" height="${p.h}" rx="12" ry="12"
+        fill="${T.pillBg}" stroke="${T.pillBorder}" stroke-width="1"/>
+  ${textToPath(font, p.label, { x: tx, y: py + 16.2, fontSize: p.fontSize, anchor: 'middle', fill: T.valueText })}`;
+        }).join('');
+      } else {
+        let linesHtml = card.lines.map((line, li) =>
+          textToPath(font, line, { x: contentX, y: contentY + 13 + li * TEXT_LINE_H, fontSize: TEXT_SIZE, fill: T.valueText }),
+        ).join('\n  ');
+        if (card.link) {
+          linesHtml = `<a href="${card.link}" target="_blank">${linesHtml}</a>`;
+        }
+        bodyHtml = `\n  ${linesHtml}`;
+      }
+
+      return `
+  <rect x="${colX}" y="${y}" width="${BENTO_COL_W}" height="${card.height}" rx="10" ry="10"
+        fill="${T.chipBg}" stroke="${T.chipBorder}" stroke-width="1"/>
+  <g transform="translate(${contentX},${y + CARD_PAD_TOP}) scale(0.9)" fill="${T.accent}" color="${T.accent}">${card.icon}</g>
+  ${textToPath(font, card.label.toUpperCase(), { x: contentX + 22, y: y + CARD_PAD_TOP + 12, fontSize: 11, letterSpacing: 0.9, fill: T.labelText })}${bodyHtml}`;
+    }).join('');
+  }
+
+  const leftHtml  = renderColumn(leftCards, PAD);
+  const rightHtml = renderColumn(rightCards, PAD + BENTO_COL_W + GAP);
+
+  const H         = BENTO_Y + gridH + (gridH > 0 ? 28 : 16);
   const updatedAt = new Date().toISOString().slice(0, 10);
 
   const accStops = T.accentStops
@@ -546,7 +696,6 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <defs>
-    ${FONT_EMBED}
     <clipPath id="card"><rect width="${W}" height="${H}" rx="${RADIUS}" ry="${RADIUS}"/></clipPath>
     <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">${accStops}</linearGradient>
     <linearGradient id="bdr" x1="0" y1="0" x2="1" y2="1">${bdrStops}</linearGradient>
@@ -554,7 +703,7 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
       <circle cx="10" cy="10" r="1" fill="${T.dotColor}" opacity="${T.dotOpacity}"/>
     </pattern>
     <clipPath id="bar">
-      <rect x="${BAR_X}" y="${SEGBAR_Y}" width="${BAR_W}" height="${SEGBAR_H}" rx="6" ry="6"/>
+      <rect x="${BAR_X}" y="${SEGBAR_Y}" width="${BAR_W}" height="${SEGBAR_H}" rx="5" ry="5"/>
     </clipPath>
   </defs>
 
@@ -563,22 +712,18 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
   <rect y="0" width="${W}" height="3" fill="url(#acc)" clip-path="url(#card)"/>
 
-  <g clip-path="url(#card)" font-family="${FONT_BODY}">
+  <g clip-path="url(#card)">
 
     ${chipsHtml}
 
-    <text x="${PAD}" y="${LANG_TOP}"
-          font-family="${FONT_LABEL}" font-weight="bold" font-size="11" letter-spacing="1.2" fill="${T.langLabel}">LANGUAGES</text>
+    ${textToPath(font, 'LANGUAGES', { x: PAD, y: LANG_TOP, fontSize: 11, letterSpacing: 1.2, fill: T.labelText })}
     <g clip-path="url(#bar)">${segments}</g>
     ${legend}
 
-    <line x1="${PAD}" y1="${DIV_Y}" x2="${W - PAD}" y2="${DIV_Y}"
-          stroke="${T.divider}" stroke-width="1"/>
+    ${leftHtml}
+    ${rightHtml}
 
-    ${aboutHtml}
-
-    <text x="${W - PAD}" y="${H - 6}" font-family="${FONT_LABEL}" font-size="10" fill="${T.timestamp}"
-          text-anchor="end">updated ${updatedAt}</text>
+    ${textToPath(font, `updated ${updatedAt}`, { x: W - PAD, y: H - 10, fontSize: 10, anchor: 'end', fill: T.timestamp })}
 
   </g>
 
@@ -589,19 +734,24 @@ function buildSVG({ totalStars, lifetimeContribs, recentContribs, linesOfCode, l
 
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function main() {
+  if (!TOKEN)    { console.error('GITHUB_TOKEN is required');    process.exit(1); }
+  if (!USERNAME) { console.error('GITHUB_USERNAME is required'); process.exit(1); }
+
   console.log(`[widget] fetching data for ${USERNAME} (theme: ${activeTheme === THEMES.default ? 'default' : (process.env.WIDGET_THEME ?? 'default')})`);
 
-  const { createdAt, repos } = await fetchAllRepos();
+  const [font, { createdAt, publicRepos, repos }] = await Promise.all([
+    loadAlloFont(),
+    fetchAllRepos(),
+  ]);
+
   const ownedRepos = repos.filter((r) => !r.isFork);
   const forkRepos  = repos.filter((r) =>  r.isFork);
-  console.log(`[widget] ${repos.length} total repos (${ownedRepos.length} owned, ${forkRepos.length} forks)`);
+  console.log(`[widget] ${repos.length} total repos (${ownedRepos.length} owned, ${forkRepos.length} forks, ${publicRepos} public)`);
 
-  // Stars and language breakdown: owned repos only, so forked codebases
+  // Language breakdown: owned repos only, so forked codebases
   // don't skew the language graph toward languages you didn't really choose.
-  let totalStars = 0;
-  const langMap  = new Map();
+  const langMap = new Map();
   for (const repo of ownedRepos) {
-    totalStars += repo.stargazerCount;
     for (const { size, node } of repo.languages.edges) {
       langMap.set(node.name, (langMap.get(node.name) ?? 0) + size);
     }
@@ -613,27 +763,30 @@ async function main() {
   console.log('[widget] fetching lifetime contributions…');
   const lifetimeContribs = await fetchLifetimeContribs(createdAt);
 
-  console.log('[widget] fetching 14-day contributions…');
-  const recentContribs = await fetchRecentContribs();
+  const yearsOnGithub = formatYears(createdAt);
 
   // LOC: all repos including forks, but contributor stats filter to your
   // commits only, so you only count lines you actually wrote.
   console.log(`[widget] fetching lines of code across all ${repos.length} repos (including forks)…`);
   const linesOfCode = await fetchLinesOfCode(repos);
 
-  console.log(`[widget] stars=${totalStars}  lifetime=${lifetimeContribs}  14d=${recentContribs}  loc=${linesOfCode}`);
+  console.log(`[widget] publicRepos=${publicRepos}  lifetime=${lifetimeContribs}  years=${yearsOnGithub}  loc=${linesOfCode}`);
 
   const svg = buildSVG({
-    login: USERNAME,
-    totalStars,
+    publicRepos,
     lifetimeContribs,
-    recentContribs,
+    yearsOnGithub,
     linesOfCode,
     languages,
+    font,
   });
 
   fs.writeFileSync(OUTPUT_FILE, svg, 'utf8');
   console.log(`[widget] written → ${OUTPUT_FILE}`);
 }
 
-main().catch((err) => { console.error(err); process.exit(1); });
+if (require.main === module) {
+  main().catch((err) => { console.error(err); process.exit(1); });
+}
+
+module.exports = { buildSVG, loadAlloFont, parsePills, formatYears, THEMES };

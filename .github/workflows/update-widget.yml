@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - '.github/scripts/generate-widget.js'
+      - '.github/scripts/package.json'
       - '.github/workflows/update-widget.yml'
   workflow_dispatch:             # allow manual trigger from the Actions tab
 
@@ -38,21 +39,20 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install widget dependencies
+        run: npm install --prefix .github/scripts
+
       - name: Generate SVG widget
         env:
           GITHUB_TOKEN:    ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ github.repository_owner }}
           # ── Customise your details here ───────────────────────────────────
           WIDGET_THEME:    'nord'   # 'default' | 'nord' | 'catppuccin'
-          WIDGET_IDE:      'Neovim'
-          WIDGET_STACK:    'Kotlin · Java · Rust · JavaScript, HTML, CSS · TypeScript · Python'
+          WIDGET_STACK:    'Kotlin · Java · Rust · JavaScript · HTML · CSS · TypeScript · Python'
           WIDGET_LEARNING: 'WebAssembly · Odin · C-based languages · Rust (further)'
           WIDGET_OTHER:    'IKT/ICT · Distributed Systems · Cybersecurity · Networking'
-          WIDGET_CONTACT:  |-
-            Email: zsombor@remgr.dev | zsombor@mailbox.org
-            Discord: remgr
-            Telegram: @Remgr12
-          WIDGET_LOCATION: 'Salzburg State'
+          WIDGET_CONTACT:  'zsombor@remgr.dev | zsombor@mailbox.org'
+          WIDGET_LOCATION: 'Salzburg, Austria'
           # ─────────────────────────────────────────────────────────────────
           OUTPUT_FILE: github-stats.svg
         run: node .github/scripts/generate-widget.js
